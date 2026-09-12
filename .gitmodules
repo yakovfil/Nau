@@ -1,0 +1,9 @@
+[submodule "NauDocsPublic"]
+	path = NauDocsPublic
+	url = https://github.com/yakovfil/NauDocsPublic.git
+[submodule "NauEditorPublic"]
+	path = NauEditorPublic
+	url = https://github.com/yakovfil/NauEditorPublic.git
+[submodule "NauEngineLite"]
+	path = NauEngineLite
+	url = https://github.com/yakovfil/NauEngineLite.git
