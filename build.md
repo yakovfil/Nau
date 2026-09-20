@@ -1,6 +1,6 @@
 # Building the Engine and Editor
 
-These instructions cover Windows x64 builds of `NauEngineLite` and `NauEditorPublic` using Visual Studio 2022 and PowerShell. Run commands one at a time and continue only after each succeeds. The repository root has no CMake project; configure each component separately.
+These instructions cover Windows x64 builds of `NauEngineLite` and `NauEditorPublic` using Visual Studio 2022 and PowerShell, plus the Emscripten toolchain checks below. Run commands one at a time and continue only after each succeeds. The repository root has no CMake project; configure each component separately. See [prerequisites.md](prerequisites.md) for required tools, exact SDK versions, installation status and remaining source prerequisites.
 
 ## 1. Install prerequisites
 
@@ -22,8 +22,11 @@ Verify the command-line tools and install the Python packages checked by CMake:
 ```powershell
 git --version
 cmake --version
+py -3.10 --version
+py -3.10 -m pip install cymbal==1.0.0 clang==21.1.7
+$nauPython = py -3.10 -c 'import sys; print(sys.prefix)'
+$env:PATH = "$nauPython;$nauPython/Scripts;$env:PATH"
 python --version
-python -m pip install cymbal clang
 pip show cymbal clang
 ```
 
@@ -219,6 +222,185 @@ After ordinary source edits, rerun the relevant build command. After manifest or
 
 Configuration and builds can update source-tree files, including `run_tests.bat`, translations, and shader caches. Inspect `git status` within both components before committing.
 
+## 6. Emscripten setup and capability checks
+
+On 2026-09-19, external emsdk **6.0.9** and Ninja **1.13.2** were installed. CMake
+**4.2.1** was retained. The SDK includes Node **24.19.0** and Python **3.13.3**.
+The exact pin is stored in `NauEngineLite/cmake/emscripten-sdk-version.txt`.
+It passes toolchain probes, production Wasm core tests and focused production
+browser platform and actual minimal sample tests. Runtime packaging and delivery remain pending.
+
+For this machine, emsdk is installed at `$HOME/emsdk`. Reopen PowerShell to pick
+up Ninja's PATH entry. Starting at the repository root:
+
+```powershell
+. "$HOME/emsdk/emsdk_env.ps1"
+Set-Location NauEngineLite
+./cmake/check_emscripten.ps1
+./cmake/check_emscripten.ps1 -Probe -Configuration Debug
+./cmake/check_emscripten.ps1 -Probe -Configuration Release
+python cmake/probes/emscripten/test_preflight.py
+python cmake/probes/emscripten/test_platform_options.py
+```
+
+The probes use separate `build/emscripten-probe-debug` and
+`build/emscripten-probe-release` directories. Both compile and link C++20
+coroutines and pthreads, producing `.js` and `.wasm` files. They do not build or
+run Nau. Seven preflight checks passed, including missing/mismatched SDK,
+missing SDK files, direct CMake rejection and native compiler-cache rejection.
+SDK activation metadata remained unchanged during those checks.
+
+See the engine-local [Emscripten guide](NauEngineLite/doc/emscripten_build.md) for
+fresh installation commands, exact tool versions and the delivery boundary.
+The shared minimal framework now passes native Debug/Release lifecycle tests.
+Browser platform services and the actual sample pass Chrome tests. Use the browser
+presets below; staged packages and relocation remain pending.
+
+Browser presets `web-minimal-debug` and `web-minimal-release` now exist with
+matching build presets, isolated Ninja caches, and separate `bin`/`lib` paths.
+Both presets configure and build the actual `MinimalAppSample`. Its production
+minimal graph excludes desktop dependencies. The platform checks also retain
+standalone option checks using bundled `xxHash`; sample graph and Chrome checks
+are documented in the [sample guide](NauEngineLite/doc/minimal_app_web.md).
+
+The existing desktop `win_vs2022_x64` preset also configured successfully before
+and after the platform changes, without an active emsdk. Its preset definitions
+and 36 selected compiler/cache settings matched; the browser checks left its
+original native cache unchanged. Full engine/editor compilation remains unverified.
+
+The approved one-line bundled `fmt` fix resolves its C++20 consteval failure with
+SDK 6.0.9. Run `python cmake/probes/emscripten/test_fmt_compatibility.py` from the
+engine directory to reproduce Debug/Release builds, Node runtime formatting and
+invalid-format compile rejection. Native `fmt` library builds also pass in both
+configurations; see the [compatibility record](NauEngineLite/doc/fmt_emscripten_compatibility.md).
+
+VS 2022 C++ Build Tools **17.14.41**, Python **3.10.11**, `cymbal==1.0.0` and
+`clang==21.1.7` were also installed for native validation. A separate native C++20
+smoke test configured, built and ran with MSVC **19.44.35229.0** and Windows SDK
+**10.0.26100.0**, without an active emsdk. This does not establish full desktop
+engine/editor build success. Existing vcpkg was reused and user `VCPKG_ROOT` set
+to `D:/Programming/vcpkg`; new shells inherit it. No dependency revisions were
+updated.
+
+## 7. Native minimal runtime
+
+The non-rendering profile is implemented. From `NauEngineLite`:
+
+```powershell
+cmake --preset native-minimal-debug
+cmake --build --preset native-minimal-debug
+ctest --test-dir build/native-minimal-debug -C Debug --output-on-failure
+cmake --preset native-minimal-release
+cmake --build --preset native-minimal-release
+ctest --test-dir build/native-minimal-release -C Release --output-on-failure
+```
+
+Both configurations build the real kernel, `NauFrameworkMinimal`, `PlatformApp`,
+sample and focused lifecycle suite. Both configurations pass 19 Google Tests,
+including real platform startup, five pre/post updates, orderly shutdown,
+service initialization failures, partial cleanup, shutdown/disposal errors,
+dependency order, initialization proxies, checked application creation/startup,
+Stop during startup and pending cleanup without duplicate disposal. The native
+kernel source-selection error is fixed, and the scene cleanup regression plus
+11 existing scene update/deactivation tests pass in Debug and Release.
+The independent browser application lifecycle is also implemented; see the
+[validation record](openspec/changes/browser-runtime-lifecycle/validation.md).
+This profile uses bundled
+sources without vcpkg, Qt, USD or Python generator packages. See the
+[profile guide](NauEngineLite/doc/minimal_runtime_profile.md) for dependency lists,
+graph checks and validation limits. Affected desktop `NauFramework` and
+`PlatformApp` Debug libraries also compile with dependency project builds skipped;
+a full desktop application build remains unverified.
+
 ## Reference and validation scope
 
-These instructions were checked against the component `CMakePresets.json` files, engine and editor CMake targets, installer scripts, and local installation documentation. Both configure-preset lists were successfully read with CMake. Full configuration, compilation, test execution, and installer generation were not performed while writing this guide.
+The `wasm-core-portability` milestone now passes focused tests with the production
+kernel in isolated native and Wasm Debug/Release directories. It also compiles
+all eight shared minimal-framework sources. Use the
+[core build guide](NauEngineLite/doc/wasm_core_portability.md) for the exact CMake
+commands and graph/failure audits; these remain independent of the browser
+application presets. Required dependencies are listed in
+[prerequisites.md](prerequisites.md).
+
+Validation includes 27 Wasm tests under activated SDK Node 24.19.0, fatal diagnostic
+exit checks, 26 native core tests, and the real native minimal lifecycle in both
+configurations. The approved malformed-UTF behavior is diagnostic plus empty
+result on Wasm, with no partial conversion. Native checked conversion behavior
+is retained. Browser platform services and the real application lifecycle pass
+the focused Chrome suites described below. The actual sample/preset integration
+also passes; packages and Chrome relocation tests remain pending.
+
+## Browser platform build and validation
+
+From `NauEngineLite`, install the test runner with
+`python -m pip install playwright==1.63.0` and load the activated SDK environment.
+The [platform guide](NauEngineLite/doc/browser_platform_services.md) contains the
+complete Debug/Release configure, build and CTest commands, host contract and
+shutdown behavior. Required tools and exact tested versions are listed in
+[prerequisites.md](prerequisites.md).
+
+The independent build entry point is `cmake/probes/browser_platform`, with outputs
+in `build/browser-platform-debug` and `build/browser-platform-release`. Both pass
+8/8 Chrome cases using real production static module registration and the shared
+platform service. Coverage includes DOM geometry/visibility, initialization errors,
+worker dispatch, bounded pumping, host removal and disposal. The test server uses
+isolation headers and a temporary Chrome profile; it is not a relocatable app package.
+
+For desktop CMake regeneration, put the installed Python 3.10 directory and its
+`Scripts` directory first on PATH: the existing package checks invoke `pip`
+directly. With that environment, the affected desktop framework/platform Debug
+libraries compile. The approved kernel source-selection fix also allows the full
+`test_scene` dependency build in Debug and Release; 12 affected scene tests pass
+in each. A complete desktop application build remains unverified.
+
+## Browser application lifecycle build and validation
+
+Use the [lifecycle guide](NauEngineLite/doc/browser_runtime_lifecycle.md) for the
+complete PowerShell configure/build/test commands. Its independent entry point
+is `NauEngineLite/cmake/probes/browser_runtime`, with Debug/Release outputs under
+`build/browser-runtime-debug` and `build/browser-runtime-release`. Configure with
+the activated SDK 6.0.9 toolchain and explicitly select the Python interpreter
+containing Playwright using `-DPython3_EXECUTABLE=<absolute-python-path>`.
+
+The real application worker and production static PlatformApp supply ordered
+status, completed-step counts, asynchronous Stop, checked startup failures,
+cleanup and reload-to-retry behavior. Thirteen Chrome cases per configuration
+include five-second 8–12 Hz acceptance, UI heartbeat, real tab hide/show, pending
+work, host loss and isolated negative fixtures. Deterministic timing tests run
+in the 19-test native lifecycle suite. See the [scenario evidence](openspec/changes/browser-runtime-lifecycle/validation.md).
+
+The actual sample now consumes this lifecycle through `web-minimal-*`. From
+`NauEngineLite` with the SDK active:
+
+```powershell
+cmake --preset web-minimal-debug
+cmake --build --preset web-minimal-debug --parallel 8
+cmake --preset web-minimal-release
+cmake --build --preset web-minimal-release --parallel 8
+python cmake/probes/minimal_app_web/run.py --build build/web-minimal-debug --scenario success
+python cmake/probes/minimal_app_web/run.py --build build/web-minimal-release --scenario success
+```
+
+Use Python with Playwright installed for the runner. Both sample configurations
+pass success, missing-host, host-loss and intentional runner-failure checks.
+Foreground rates measured 9.7830 Hz Debug / 9.7711 Hz Release. The
+[sample guide](NauEngineLite/doc/minimal_app_web.md) covers all scenarios and
+[validation evidence](openspec/changes/minimal-app-web/validation.md) records graph
+and regression results. Outputs are `bin/MinimalAppSample.js` and `.wasm` in each
+preset build directory; no separate worker script was emitted by SDK 6.0.9.
+Default browser builds now stage `package/` in each preset directory. Run
+`python build/web-minimal-debug/package/serve.py --port 8000` from the engine
+directory (or use the Release path), then open the printed URL. Copy the entire
+folder to serve elsewhere; `--base-path /relocated/nau/` supports nested URLs.
+The [delivery guide](NauEngineLite/doc/minimal_web_delivery.md) covers controls,
+failure diagnostics and acceptance. Serving needs Python 3.9+ and Chrome only;
+Playwright and the SDK are not serving dependencies. The page checks isolation
+before loading runtime files, exposes real status/Stop/cleanup, and requires
+reload to retry. Fresh-checkout/environment reproduction remains pending.
+
+These instructions were checked against the component `CMakePresets.json` files,
+engine and editor CMake targets, installer scripts, and local installation
+documentation. Both configure-preset lists were successfully read with CMake.
+Validation performed for the Emscripten update is listed above. Full engine/editor
+compilation, test execution, and installer generation remain
+unverified.
