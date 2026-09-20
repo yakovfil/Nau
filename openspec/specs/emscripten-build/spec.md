@@ -72,7 +72,7 @@ Both browser configurations SHALL statically link the selected runtime modules w
 
 ### Requirement: Exact minimal entry-point selection
 
-The browser target SHALL use `samples/minimalApp/app_sample_main_min.cpp` as its entry-point source and SHALL link exactly one application entry point. It SHALL consume the dedicated minimal framework shared with native validation rather than a mock runtime.
+The browser target SHALL use `minimalApp/app_sample_main_min.cpp` from the selected external NauSamples checkout as its entry-point source and SHALL link exactly one application entry point. It SHALL consume the dedicated minimal framework shared with native validation rather than a mock runtime.
 
 #### Scenario: Both existing sample sources are present
 - **WHEN** the sample directory contains both existing source files defining an entry point
