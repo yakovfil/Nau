@@ -17,7 +17,7 @@
 ## 3. Adapt tests and reproduction tooling
 
 - [x] 3.1 Update minimal runtime/profile/package audits to resolve external source paths while retaining entry-point, module and dependency assertions; run the affected graph and negative-source checks.
-- [ ] 3.2 Extend fresh-checkout helpers to include NauSamples and record all repository/patch identities; verify fresh checkout materialization uses no original build tree and detects missing required sample sources.
+- [x] 3.2 Extend fresh-checkout helpers to include NauSamples and record all repository/patch identities; verify fresh checkout materialization uses no original build tree and detects missing required sample sources.
 
 ## 4. Verify compatibility across consumers
 
@@ -30,9 +30,9 @@
 
 - [x] 4.3 Build and run existing minimal and demo browser Debug/Release acceptance, including source provenance, startup/Stop/failure cases and relocated packages; verify unchanged non-rendering graphs, timing and demo rendering.
 - [x] 4.4 Install and relocate the native SDK, configure its installed sample workflow and compile representative minimal and asset-using samples; verify runtime resource lookup and absence of original source-tree dependencies.
-- [ ] 4.5 Execute documented fresh-checkout builds with recorded submodule revisions and external SDK setup; verify minimal/demo Debug/Release rendering or update progress and Stop, and distinguish local repository availability from remote publication.
+- [x] 4.5 Execute documented fresh-checkout builds with recorded submodule revisions and external SDK setup; verify minimal/demo Debug/Release rendering or update progress and Stop, and distinguish local repository availability from remote publication.
 
 ## 5. Document and finalize the migration
 
 - [x] 5.1 Update current root/component build guides, prerequisites and repository layout instructions, including custom sample roots, clean reconfiguration, SDK paths and publication order; verify commands against implemented entry points and leave archived historical evidence intact.
-- [ ] 5.2 Record extraction provenance, coordinated repository identities, scenario results and remaining limitations; verify every spec scenario has evidence, required checks are complete and strict OpenSpec validation passes before marking the change complete.
+- [x] 5.2 Record extraction provenance, coordinated repository identities, scenario results and remaining limitations; verify every spec scenario has evidence, required checks are complete and strict OpenSpec validation passes before marking the change complete.

@@ -1,5 +1,7 @@
 # Validation
 
+Final result on 2026-09-20: extraction implementation and required migration acceptance are complete. Native builds and user visual acceptance, relocated SDK samples, browser acceptance and fresh committed-source reproduction pass. The chronological checkpoints below retain earlier failures and their resolution. All changes are committed locally; remote publication has not been performed.
+
 ## Source and extraction checkpoint
 
 Implementation began on 2026-09-20. Baseline engine: 02574c7104725c6c60358c7d579a0e11da2f174b; demo: 6c3b738209cb5aa5e2ff1cd6fc7cba5452aa1919; parent: 66e8148. NauSamples initially contained commit bcf3bf4 and its LICENSE. Detailed initial identities and tracked sample inventory are in NauEngineLite/build/extract-samples-evidence/source-identities.json and source-tree.txt.
@@ -49,3 +51,46 @@ The installed SDK dispatcher now imports miniaudio, lua, LuaToolkit and ScriptsL
 The complete Debug SDK installation was copied to `%TEMP%/nau-extracted-samples-sdk-final-20260920`. Configuration and builds of MinimalAppSample, SceneBaseSample, inputDemo and ScriptsSample pass (`final-sdk-{install,configure,build}.log`). Inventory verifies all 414 original tracked sample paths, exclusion of Git/build-directory metadata, and no original checkout paths in compile sources or include directories across 26 generated sample projects (`final-sdk-inventory.json`). From the relocated SDK root, SceneBaseSample and inputDemo stay running for 15 seconds, create one and two visible windows respectively, then exit 0 after close requests without forced termination (`sdk-runtime-*-process.json` and stdout/stderr logs). Runtime lookup therefore uses the installed layout; existing DX12 validation/cache warnings remain in the captured logs and are not attributed to extraction.
 
 External-path contract checks and browser/native demo graph checks pass again (`final-demo-graph.log`), including missing-source diagnostics and unchanged presets. Camera and pending-scene browser fixtures pass in Debug and Release (`final-fixtures-*/*/results.json`). Both normal delivery configurations are restored to `NAU_DEMO_TEST_HOOKS=OFF` and rebuilt. Current guides document external roots, the SDK build/install/relocation commands, and component-first publication. Existing absolute SDK installation destinations require using the preset's configured output directory and then copying the completed installation; `--prefix` override support was not introduced.
+
+## Coordinated revisions and scenario coverage
+
+Parent implementation commit: `c6ab80a` (`Extract NauSamples into a coordinated submodule`). Final validation-record updates may follow in the parent only; they do not change the component build inputs below.
+
+| Repository | Validated component revision |
+| --- | --- |
+| NauEngineLite | `18fa929a2bbb30a53a37cf1e4cc14b8ae272aaee` |
+| NauSamples | `10f0403e3f2e05611c8d297f27b9a4647501398b` |
+| NauDemo | `f9aef46e275860f1883a48bdcace0c86d3dfe228` |
+| NauEditorPublic (unchanged) | `ee980c3cb7eaa540e4dbb85ef869630ba7afbeb7` |
+| NauDocsPublic (unchanged) | `f252ec3562112910d50cc153943860e811d18bbf` |
+
+Final file accounting records 414 retained original paths: 405 unchanged Git blobs and nine integration edits (`final-file-accounting.json`). The nine edited paths are the root CMake dispatcher, networkTransport configuration, sample_common CMake/header/implementation, sceneBase CMake, scriptUsage CMake, and UI CMake/configuration. Original engine and destination license texts are unchanged; both imported-history ancestors remain reachable. The engine no longer contains a samples tree, its presets and nested submodule definitions are unchanged, and unrelated parent gitlinks are unchanged.
+
+A separate clone of parent `c6ab80a` successfully runs `git submodule update --init NauSamples` using an explicit local URL override and checks out exactly `10f0403` (`final-submodule-init.log`). The committed URL remains `https://github.com/yakovfil/NauSamples.git`. This is evidence of local revision availability; no component or parent push was performed.
+
+| Spec scenario | Evidence |
+| --- | --- |
+| Extraction audited | Exact pre-edit tree match, ancestry checks, final 414-path accounting and original licenses |
+| Recorded repositories initialized | Fresh parent clone and real NauSamples submodule initialization at its recorded gitlink |
+| Default/custom checkout | Compiler-free source contract plus actual minimal build with spaces in source/build paths |
+| Required checkout unavailable | Missing/invalid source diagnostics; deleted minimal entry-point negative check |
+| Engine-only selection | Sample-free desktop/minimal contract checks and actual demo graph with unavailable samples path |
+| Native consumers run | 24 native target/configuration builds, both fast demo builds, user acceptance for all three visual applications |
+| Over-aligned native allocations | Old-test failure, 15 allocator tests per configuration, 410 Debug runtime tests, clean inputDemo startup/close |
+| Browser consumers exercised | Nine minimal and 19 demo scenarios per configuration, four camera/pending-scene fixtures, post-repair startup/Stop checks |
+| Installed SDK relocated | 414-file SDK inventory, four representative sample builds, two asset-using sample launches outside checkout |
+| Exact minimal entry point | Native/browser source and dependency graph audits, with unchanged profile exclusions |
+
+After restoring normal delivery builds, complete demo packages were copied outside the checkout to `%TEMP%/nau-extracted-demo-final-{debug,release}-20260920`. Both pass rendering, rotation, resize and Stop checks at `/relocated/demo/` (`final-demo-relocated-*/results.json`). Minimal success checks also use relocated packages and real visibility changes. Earlier failed probes remain in the evidence directory and are distinguished from later passing results above.
+
+## Final fresh committed-source walkthrough
+
+With SDK 6.0.9 activated, ran:
+
+```powershell
+python -B NauDemo/web/reproduce.py --destination "$env:TEMP/nau-extracted-samples-final-repro-20260920" --sdk C:/Users/Yakov/emsdk
+```
+
+All 24 recorded helper commands succeed: four independent local clones/checkouts, tool identity checks, and minimal/demo configure/build/Chrome acceptance in Debug/Release. Parent input is `c6ab80a808e7651d1c9ca4db14ea81362fa585e6`; component inputs exactly match the table above. Every repository has the empty patch SHA-256 `e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855` and no copied untracked files. Builds leave tracked source unchanged. Minimal update/Stop and demo rendering/Stop pass in both configurations. Final results, command logs, tool identities and browser evidence are preserved under `NauEngineLite/build/extract-samples-evidence/final-fresh/`, with the main invocation log at `final-fresh-walkthrough.log`.
+
+A separate configure in this fresh checkout with an unavailable `NAU_SAMPLES_SOURCE_DIR` fails with the expected missing-input and initialization/override guidance (`final-fresh-missing-samples.log`). This completes the fresh-checkout and migration-completion scenarios. Strict OpenSpec validation passes. The only parent changes after the tested implementation revision finalize this validation record and task checkboxes; component build inputs remain unchanged.
