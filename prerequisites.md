@@ -156,3 +156,9 @@ directory on PATH, `cymbal==1.0.0` and `clang==21.1.7`.
 
 See [NauDemo web](NauEngineLite/doc/naudemo_web.md) for build, serving, fixture,
 relocation and recorded fresh-checkout commands.
+
+## NauSamples dependency
+
+The root `NauSamples` submodule (`https://github.com/yakovfil/NauSamples.git`) supplies native samples and the minimal browser application. Initialize it from Nau with `git submodule update --init NauSamples`. Native NauDemo requires its shared support and sceneBase resources. The browser demo-only build uses NauDemo's own assets.
+
+Select another checkout through CMake's `NAU_SAMPLES_SOURCE_DIR` cache path. Configuration reports missing required sample files and never clones repositories automatically. Existing SDK/compiler prerequisites are unchanged. Keep generated caches out of source migration and reconfigure old build trees. Compatible samples, engine and demo revisions are recorded by the parent repository; publish their commits before a parent revision that references them.

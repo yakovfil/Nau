@@ -396,7 +396,8 @@ The [delivery guide](NauEngineLite/doc/minimal_web_delivery.md) covers controls,
 failure diagnostics and acceptance. Serving needs Python 3.9+ and Chrome only;
 Playwright and the SDK are not serving dependencies. The page checks isolation
 before loading runtime files, exposes real status/Stop/cleanup, and requires
-reload to retry. Fresh-checkout/environment reproduction remains pending.
+reload to retry. The sample extraction walkthrough validates fresh local
+checkouts of the engine, samples and demo with the recorded SDK setup.
 
 These instructions were checked against the component `CMakePresets.json` files,
 engine and editor CMake targets, installer scripts, and local installation
@@ -430,4 +431,10 @@ shader inputs, a hashed manifest and a loopback server. Copy the entire folder;
 not requested at runtime. See [NauDemo browser instructions](NauEngineLite/doc/naudemo_web.md)
 for exact acceptance and fresh-checkout commands. Native NauDemo now also builds
 from current sources in Debug/Release using its documented CMake hook; native
-appearance confirmation remains distinct from those successful builds.
+appearance and behavior have also been accepted by the user during sample extraction.
+
+## External samples checkout
+
+All engine samples now live in the sibling `NauSamples` submodule. From this repository root run `git submodule update --init NauSamples` before configuring native samples or the minimal browser app. Existing engine presets and target names remain unchanged. `NAU_SAMPLES_SOURCE_DIR` defaults to that sibling checkout; pass `"-DNAU_SAMPLES_SOURCE_DIR=<absolute path>"` for another location.
+
+Use a clean configuration after moving from engine-local samples. Native NauDemo also uses the selected sample checkout for common code, shaders and environment assets. Browser NauDemo and engine-only configurations without sample consumers do not require it. Installed SDKs continue to contain a `samples/` directory. See [external sample integration](NauEngineLite/doc/external_samples.md) for paths, SDK behavior and component publication order.

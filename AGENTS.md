@@ -2,9 +2,11 @@
 
 ## Project Structure & Module Organization
 
-This repository groups three Git submodules; there is no root-level build target.
+This repository groups engine, editor, documentation, demo and samples submodules; there is no root-level build target.
 
-- `NauEngineLite/`: C++ engine code in `engine/core/`, developer tools in `tools/`, examples and assets in `samples/`, and reusable projects in `project_templates/`. Tests live beside their modules under `tests/`.
+- `NauEngineLite/`: C++ engine code in `engine/core/`, developer tools in `tools/`, and reusable projects in `project_templates/`. Tests live beside their modules under `tests/`.
+- `NauSamples/`: extracted examples, shared sample support and assets; integrated through engine presets and `NAU_SAMPLES_SOURCE_DIR`.
+- `NauDemo/`: native and browser rotating-cube application.
 - `NauEditorPublic/`: Qt 6/C++20 editor code in `editor/source/`, tests in `editor/tests/`, and localization in `translations/`.
 - `NauDocsPublic/`: Sphinx documentation in `source/beta/`, with build helpers in `scripts/` and root batch files.
 
