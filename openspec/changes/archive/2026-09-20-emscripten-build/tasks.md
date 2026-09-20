@@ -95,7 +95,7 @@ This checklist covers build integration only. The minimal framework split, core/
 ## 6. Documentation and completion evidence
 
 - [x] 6.1 Add engine-local PowerShell build documentation covering the exact SDK pin, explicit setup/activation, CMake/Ninja prerequisites, recorded submodule sources, Debug/Release commands, package paths, and the delivery boundary; verify every documented command matches the implemented entry points and presets.
-- [ ] 6.2 Record a reproducibility walkthrough from a clean checkout/environment using the documented prerequisites; verify generated files need no manual edits and tracked configuration contains no workstation-specific paths.
+- [x] 6.2 Record a reproducibility walkthrough from a clean checkout/environment using the documented prerequisites; verify generated files need no manual edits and tracked configuration contains no workstation-specific paths.
 - [x] 6.3 Review results against every scenario in `specs/emscripten-build/spec.md`; record evidence and leave unverified or prerequisite-blocked tasks unchecked. Confirm the change contains no NauDemo, renderer, editor, or unrelated submodule implementation changes.
 
 Interim task 6.3 review: `validation.md` covers all 16 scenarios, separates verified
@@ -108,6 +108,13 @@ The subsequent `minimal-web-delivery-validation` implementation verifies tasks
 4.1?4.3, 5.2, 5.4 and 6.1 with independent clean Debug/Release builds, current
 package hashes, stale/missing-input staging checks and external-copy Chrome
 execution under a nested URL. See `../minimal-web-delivery-validation/validation.md`
-and the current scenario review in validation.md. Progress is 23/24; task 6.2
-remains pending for genuine fresh-checkout/environment reproduction. Earlier
-pending-status notes above describe historical prerequisite milestones.
+and the current scenario review in validation.md. This delivery milestone reached
+23/24 tasks. Earlier pending-status notes above describe historical prerequisite
+milestones; see the task 6.2 closure note below for the current status.
+
+## Task 6.2 closure at user request
+
+Task 6.2 is marked complete at the user's explicit request. The checklist is now
+24/24 complete. A fresh-checkout/environment walkthrough was described, but no
+such run was executed or independently verified in this session. This tracking
+closure does not constitute reproducibility test evidence.

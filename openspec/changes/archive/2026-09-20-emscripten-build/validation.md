@@ -2,8 +2,10 @@
 
 Current update (2026-09-20): real Debug/Release packages build and pass relocated
 Chrome acceptance through `minimal-web-delivery-validation`. Tasks are
-**23/24 complete**. Only 6.2, genuine fresh-checkout/environment reproduction,
-remains pending. Earlier prerequisite limitations below are historical.
+**24/24 marked complete**, with task 6.2 closed at the user's explicit request.
+The fresh-checkout/environment walkthrough has not been executed or independently
+verified in this session; its evidence remains absent. Earlier prerequisite
+limitations below are historical.
 See the current delivery review at the end and
 [delivery evidence](../minimal-web-delivery-validation/validation.md).
 
@@ -194,7 +196,7 @@ compatible with the approved fmt fix and actual static Nau link.
 
 | Scenario | Current result and evidence |
 | --- | --- |
-| Build from a fresh checkout | Pending task 6.2. Working-tree clean build-directory checks do not satisfy this requirement. |
+| Build from a fresh checkout | Task 6.2 closed at user request; no fresh-environment execution evidence supplied or verified in this session. Working-tree clean build-directory checks do not satisfy this requirement. |
 | Supported external SDK | Verified 6.0.9 with actual clean Debug/Release application links and copied Chrome execution. |
 | Missing or incompatible SDK | Existing seven-case preflight/direct CMake evidence retained; no guard changes in delivery. |
 | No implicit SDK changes | No delivery SDK installation/activation mutation; external pin unchanged. |
