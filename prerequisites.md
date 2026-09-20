@@ -133,3 +133,26 @@ These are outside the Emscripten dependency installation performed here:
 - Documentation: Sphinx and the dependencies in `NauDocsPublic/README.md`.
 
 No editor, renderer, NauDemo, or unrelated submodule implementation was modified.
+
+
+## NauDemo web additions
+
+The demo uses the same explicitly activated **Emscripten SDK 6.0.9**, CMake
+**3.25+** (tested 4.2.1), Ninja 1.13.2, Git and Chrome as the browser runtime.
+Keep the `NauDemo` and `NauEngineLite` submodules adjacent. Its CPU asset profile
+also needs the recorded bundled `tinyimageformat` headers; no new external
+rendering SDK, Qt, USD, desktop shader tool or native DLL is required.
+
+Chrome must support WebGL 2, transferable OffscreenCanvas, workers and
+SharedArrayBuffer on a secure cross-origin isolated page. The packaged Python
+3.9+ server supplies the required headers. Serving does not need the SDK.
+
+Acceptance uses Python 3.14.2 with `playwright==1.63.0` and **Pillow==12.1.1**
+for PNG/pixel validation, using installed Chrome 153.0.8010.52. These packages
+were already available; no additional installation was required. The focused
+native/Node/Chrome scene suite additionally needs the engine googletest submodule
+and VS 2022 C++ tools. Desktop generation uses Python 3.10 with its `Scripts`
+directory on PATH, `cymbal==1.0.0` and `clang==21.1.7`.
+
+See [NauDemo web](NauEngineLite/doc/naudemo_web.md) for build, serving, fixture,
+relocation and recorded fresh-checkout commands.

@@ -404,3 +404,30 @@ documentation. Both configure-preset lists were successfully read with CMake.
 Validation performed for the Emscripten update is listed above. Full engine/editor
 compilation, test execution, and installer generation remain
 unverified.
+
+
+## NauDemo browser build
+
+From `NauEngineLite/`, with SDK 6.0.9 activated:
+
+```powershell
+. "$HOME/emsdk/emsdk_env.ps1"
+cmake --preset web-demo-debug
+cmake --build --preset web-demo-debug --parallel 8
+cmake --preset web-demo-release
+cmake --build --preset web-demo-release --parallel 8
+python build/web-demo-debug/package/serve.py --port 8000
+```
+
+Open the printed Chrome URL. The `demo` profile retains real Nau scene/assets
+and worker-owned WebGL 2 without desktop Graphics/UI/VFX/physics. Its browser
+material is simplified blue diffuse lighting; simulation remains nominally 100 ms
+per update. Stop is asynchronous; reload retries after Stop/failure.
+
+Both package folders contain runtime, preloaded and loose asset/configuration/
+shader inputs, a hashed manifest and a loopback server. Copy the entire folder;
+`--base-path /games/nau/` supports nested hosting. Source paths and SDK files are
+not requested at runtime. See [NauDemo browser instructions](NauEngineLite/doc/naudemo_web.md)
+for exact acceptance and fresh-checkout commands. Native NauDemo now also builds
+from current sources in Debug/Release using its documented CMake hook; native
+appearance confirmation remains distinct from those successful builds.
