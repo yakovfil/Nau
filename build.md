@@ -1,6 +1,6 @@
 # Building the Engine and Editor
 
-These instructions cover Windows x64 builds of `NauEngineLite` and `NauEditorPublic` using Visual Studio 2022 and PowerShell, plus the Emscripten toolchain checks below. Run commands one at a time and continue only after each succeeds. The repository root has no CMake project; configure each component separately. See [prerequisites.md](prerequisites.md) for required tools, exact SDK versions, installation status and remaining source prerequisites.
+These instructions cover Windows x64 builds of `NauEngineLite` and `NauEditorPublic` using Visual Studio 2026 and PowerShell, plus the Emscripten toolchain checks below. Run commands one at a time and continue only after each succeeds. The repository root has no CMake project; configure each component separately. See [prerequisites.md](prerequisites.md) for required tools, exact SDK versions, installation status and remaining source prerequisites.
 
 ## 1. Install prerequisites
 
@@ -8,14 +8,14 @@ Install the following before configuring either project:
 
 | Dependency | Required setup |
 | --- | --- |
-| Visual Studio 2022 | Desktop development with C++, MSVC v143, and Windows 10 SDK. |
-| CMake | A version supporting preset schema version 5. The top-level engine declaration of 3.20 alone is insufficient for these presets. Use `cmake --list-presets` below to verify compatibility. |
+| Visual Studio 2026 | Desktop development with C++, MSVC v145, and Windows 10 SDK. |
+| CMake | CMake 4.2 or newer for the Visual Studio 18 2026 generator. Browser requirements remain separate. |
 | Git | Available on `PATH`, with recursive submodule support. |
 | Python | Python 3.10 with pip on `PATH`, matching the version documented by this project. The downloaded USD package also contains its own Python 3.10 runtime. |
 | vcpkg | A bootstrapped checkout outside this repository; setup below. |
 | Qt (editor only) | The project's documented Qt 6.4.1 MSVC x64 distribution, including Debug libraries, Linguist tools, and SVG support. |
 
-Use **Developer PowerShell for VS 2022** with the x64 toolchain. Prefer a short local checkout path without Cyrillic characters or cloud synchronization.
+Use **Developer PowerShell for VS 2026** with the x64 toolchain. Prefer a short local checkout path without Cyrillic characters or cloud synchronization.
 
 Verify the command-line tools and install the Python packages checked by CMake:
 
@@ -84,25 +84,25 @@ The standard engine preset builds a static/monolithic runtime, with tools, sampl
 ```powershell
 Set-Location (Join-Path $nauRepo 'NauEngineLite')
 cmake --list-presets
-cmake --preset win_vs2022_x64
-cmake --build build/win_vs2022_x64 --config Debug
+cmake --preset win_vs2026_x64
+cmake --build build/win_vs2026_x64 --config Debug
 ```
 
 The equivalent build-preset command is `cmake --build --preset "VS Debug"`. For an optimized build, use:
 
 ```powershell
-cmake --build build/win_vs2022_x64 --config Release
+cmake --build build/win_vs2026_x64 --config Release
 ```
 
-Visual Studio presets support multiple configurations in one build directory. Supply `--config` when building and `-C` when testing. Most engine executables are placed in `build/win_vs2022_x64/bin/Debug/`, with libraries under `lib/`.
+Visual Studio presets support multiple configurations in one build directory. Supply `--config` when building and `-C` when testing. Most engine executables are placed in `build/win_vs2026_x64/bin/Debug/`, with libraries under `lib/`.
 
-For IDE development, open `build/win_vs2022_x64/NauEngine.sln`, select Debug or Release and x64, and build `ALL_BUILD`. To run an example, select an executable sample such as `MinimalAppSample` as the startup project.
+For IDE development, open `build/win_vs2026_x64/NauEngine.sln`, select Debug or Release and x64, and build `ALL_BUILD`. To run an example, select an executable sample such as `MinimalAppSample` as the startup project.
 
 ### Run engine tests
 
 ```powershell
-ctest --test-dir build/win_vs2022_x64 -C Debug -N
-ctest --test-dir build/win_vs2022_x64 -C Debug --output-on-failure
+ctest --test-dir build/win_vs2026_x64 -C Debug -N
+ctest --test-dir build/win_vs2026_x64 -C Debug --output-on-failure
 ```
 
 The first command lists registered tests; the second executes them. Add `-R '<regex>'` to select test names. Tests require `NAU_CORE_TESTS=ON` and must be compiled first. Use these portable commands instead of the absolute paths in the checked-in `run_tests.bat`.
@@ -112,7 +112,7 @@ The first command lists registered tests; the second executes them. Add `-R '<re
 After a successful build:
 
 ```powershell
-cmake --install build/win_vs2022_x64 --config Debug
+cmake --install build/win_vs2026_x64 --config Debug
 ```
 
 The engine's `CMakeLists.txt` forces the install prefix to `NauEngineLite/output/`, overriding the preset's `dist/` default. The installed tree includes a separate CMake project; the engine README describes configuring and building that tree when preparing the SDK. Installation is not required to configure the editor against engine sources.
@@ -122,9 +122,9 @@ The engine's `CMakeLists.txt` forces the install prefix to `NauEngineLite/output
 For a DLL engine, including USD-dependent tools:
 
 ```powershell
-cmake --preset win_vs2022_x64_dll -A x64
-cmake --build build/win_vs2022_x64_dll --config Debug
-ctest --test-dir build/win_vs2022_x64_dll -C Debug --output-on-failure
+cmake --preset win_vs2026_x64_dll -A x64
+cmake --build build/win_vs2026_x64_dll --config Debug
+ctest --test-dir build/win_vs2026_x64_dll -C Debug --output-on-failure
 ```
 
 The DLL configuration downloads the project's OpenUSD 24.08 archive automatically through `cmake/defaults/UsdPackages.cmake`.
@@ -147,12 +147,20 @@ Test-Path "$nauQt/bin/windeployqt.exe"
 
 Both checks should return `True`. The editor requires Qt Core, Widgets, Network, Test, OpenGL, LinguistTools, and Svg. Its vcpkg manifest does not install Qt. The documentation also lists Qt Visual Studio Tools for IDE integration; the commands below use CMake directly.
 
+Prepare the Qt 6.4.1 headers for MSVC 14.51 before configuring:
+
+```powershell
+py -3.10 "$nauRepo/NauEditorPublic/scripts/prepare_qt_for_msvc.py" "$nauQt"
+```
+
+This reproducible upstream backport removes references to retired STL iterator helpers. It preserves the Qt binaries and backs up the original header; see the [preparation instructions](NauEditorPublic/scripts/README.md).
+
 ### Configure against the engine sources
 
 ```powershell
 Set-Location (Join-Path $nauRepo 'NauEditorPublic')
 cmake --list-presets
-cmake --preset win_vs2022_x64_dll -A x64 "-DNAU_ROOT_DIR=$env:NAU_ENGINE_SOURCE_DIR" "-DCMAKE_PREFIX_PATH=$nauQt"
+cmake --preset win_vs2026_x64_dll -A x64 "-DNAU_ROOT_DIR=$env:NAU_ENGINE_SOURCE_DIR" "-DCMAKE_PREFIX_PATH=$nauQt"
 ```
 
 Use the DLL preset for the editor: its linked USD plugin targets are enabled by `BUILD_SHARED_LIBS`. `NAU_ROOT_DIR` must point to `NauEngineLite/`, not its `build/` or `output/` directory.
@@ -166,42 +174,46 @@ Unlike the older installation example, the current USD helper fetches OpenUSD au
 Build the editor target for local development:
 
 ```powershell
-cmake --build build/win_vs2022_x64_dll --config Debug --target NauEditor
+cmake --build build/win_vs2026_x64_dll --config Debug --target NauEditor
 ```
 
 This includes its declared engine, plugin, sample, and translation dependencies. Post-build commands deploy Qt libraries, engine/USD DLLs, plugins, and project templates into the editor output directory.
 
 ```powershell
-Push-Location build/win_vs2022_x64_dll/Debug/NauEditor
+Push-Location build/win_vs2026_x64_dll/Debug/NauEditor
 & ./NauEditor.exe
 Pop-Location
 ```
 
-Alternatively, open `build/win_vs2022_x64_dll/NauEditor.sln` and launch the `NauEditor` startup project. Its debugger settings configure additional USD/plugin paths. Keep the deployed files beside the executable.
+Alternatively, open `build/win_vs2026_x64_dll/NauEditor.sln` and launch the `NauEditor` startup project. Its debugger settings configure additional USD/plugin paths. Keep the deployed files beside the executable.
 
-For Release, repeat the build with `--config Release`; the executable will be under `build/win_vs2022_x64_dll/Release/NauEditor/`.
+For Release, repeat the build with `--config Release`; the executable will be under `build/win_vs2026_x64_dll/Release/NauEditor/`.
 
 ### Build and run editor tests
 
 ```powershell
-cmake --build build/win_vs2022_x64_dll --config Debug --target NauEditorUnitTests NauEditorUiTests
-$env:PATH = "$nauQt/bin;$env:PATH"
-ctest --test-dir build/win_vs2022_x64_dll -C Debug -N
-ctest --test-dir build/win_vs2022_x64_dll -C Debug --output-on-failure
-& ./build/win_vs2022_x64_dll/Debug/NauEditorUiTests/NauEditorUiTests.exe
+$nauEditorBuild = (Resolve-Path build/win_vs2026_x64_dll).Path
+$env:PATH = "$nauQt/bin;$nauEditorBuild/bin/Debug;$env:PATH"
+cmake --build build/win_vs2026_x64_dll --config Debug --target NauEditorUnitTests NauEditorUiTests
+& ./build/win_vs2026_x64_dll/Debug/NauEditorUnitTests/NauEditorUnitTests.exe
+& ./build/win_vs2026_x64_dll/Debug/NauEditorUiTests/NauEditorUiTests.exe
 ```
 
 Unit tests use Google Test discovery. The Qt UI test executable is not registered with CTest in its current CMake file, so run it separately in an interactive desktop session. Run standalone engine tests from the engine build tree, since the editor disables those suites.
+
+The commands run the configuration's unit binary directly and should report 64 tests. An exit code of zero with zero tests is not acceptance. The four deferred Release death tests are listed in `scripts/failed-tests-release.txt` and the root `failed-tests.md`; to apply only those exclusions, pass `"--gtest_filter=-$((Get-Content scripts/failed-tests-release.txt) -join ':')"` to the Release unit binary.
+
+Set PATH before building because discovery runs the test executable during the build. For Release, replace both the configuration and the `bin/Debug` PATH entry with Release.
 
 ### Optional installer packaging
 
 A default editor build, including `ALL_BUILD` or the `VS Debug Dll` build preset, also runs the `Installer` target. To request packaging explicitly:
 
 ```powershell
-cmake --build build/win_vs2022_x64_dll --config Debug --target Installer
+cmake --build build/win_vs2026_x64_dll --config Debug --target Installer
 ```
 
-The scripts additionally build/install an engine SDK, copy it into the editor distribution, download redistributables, and use NSIS. They may install NSIS and its plugin with an elevation prompt. Expected output is `build/win_vs2022_x64_dll/Debug/Installer.exe`. Inspect the packaging output as well as the exit status: the SDK helper currently resets one returned build status before proceeding. Use `--target NauEditor` when only developing the application.
+The scripts additionally build/install an engine SDK, copy it into the editor distribution, download redistributables, and use NSIS. They may install NSIS and its plugin with an elevation prompt. Expected output is `build/win_vs2026_x64_dll/Debug/Installer.exe`. Inspect the packaging output as well as the exit status: the SDK helper currently resets one returned build status before proceeding. Use `--target NauEditor` when only developing the application.
 
 ## 5. Troubleshooting and rebuilding
 
@@ -435,6 +447,28 @@ appearance and behavior have also been accepted by the user during sample extrac
 
 ## External samples checkout
 
-All engine samples now live in the sibling `NauSamples` submodule. From this repository root run `git submodule update --init NauSamples` before configuring native samples or the minimal browser app. Existing engine presets and target names remain unchanged. `NAU_SAMPLES_SOURCE_DIR` defaults to that sibling checkout; pass `"-DNAU_SAMPLES_SOURCE_DIR=<absolute path>"` for another location.
+All engine samples now live in the sibling `NauSamples` submodule. From this repository root run `git submodule update --init NauSamples` before configuring native samples or the minimal browser app. Sample target names remain unchanged; Windows presets now use `win_vs2026_x64*`. `NAU_SAMPLES_SOURCE_DIR` defaults to that sibling checkout; pass `"-DNAU_SAMPLES_SOURCE_DIR=<absolute path>"` for another location.
 
 Use a clean configuration after moving from engine-local samples. Native NauDemo also uses the selected sample checkout for common code, shaders and environment assets. Browser NauDemo and engine-only configurations without sample consumers do not require it. Installed SDKs continue to contain a `samples/` directory. See [external sample integration](NauEngineLite/doc/external_samples.md) for paths, SDK behavior and component publication order.
+
+## VS 2026 migration
+
+Native MSVC builds now require VS 2026 C++ tools, v145 and CMake 4.2+. Replace `win_vs2022_x64`, `_dll` and `_dll_asan` with their `win_vs2026_x64` counterparts. Configure fresh build directories; do not retarget an old CMake cache. For the unchanged `native-minimal-debug` and `native-minimal-release` names, use `-B build/native-minimal-vs2026-debug` or `-B build/native-minimal-vs2026-release`, and pass those paths to build/CTest. VS 2022 can remain installed, but is no longer a supported compiler selection.
+
+Existing Qt/USD package names may describe older producer compilers; do not rename their paths to match the new preset. Qt 6.4.1 requires the preparation step above for MSVC 14.51. Native minimal Debug/Release lifecycle tests, full static Debug/Release builds, and all six source-build scene/input/demo visual checks pass with MSVC 19.51.36257.0 and Windows SDK 10.0.26100.0. Release test exclusions and relocated SDK shutdown findings are recorded in [failed-tests.md](failed-tests.md). Editor and other compiler acceptance remain tracked in the [current validation record](openspec/changes/archive/2026-09-21-windows-msvc-2026/validation.md). Earlier validation records above refer to the tools originally tested.
+
+The retained Ninja/clang-cl route uses VS 2026's LLVM 22.1.3. This compiler version is separate from the Python `clang==21.1.7` bindings used by generators. Its recorded USD/TBB and Google Test headers require the [clang-cl dependency preparation](NauEngineLite/cmake/probes/windows_toolchain/README.md). From a VS 2026 x64 developer prompt with LLVM, Python 3.10 and its Scripts directory on PATH:
+
+```powershell
+# From NauEngineLite; choose your existing USD 24.08 package root.
+$nauUsd = 'C:/Tools/usd24.08'
+cmake --preset win_ninja_clangcl-debug -B build/clang-vs2026-static
+cmake --preset win_ninja_clangcl-debug_dll -B build/clang-vs2026-dll "-DFETCHCONTENT_SOURCE_DIR_USD=$nauUsd"
+python cmake/probes/windows_toolchain/prepare_clang_dependencies.py --usd-root "$nauUsd" --googletest-root engine/3rdparty_libs/googletest
+cmake --build build/clang-vs2026-static --target NauKernel SceneBaseSample test_runtime -j 4
+cmake --build build/clang-vs2026-dll --target NauKernel test_runtime -j 4
+ctest --test-dir build/clang-vs2026-static/engine/core/kernel/tests/test_runtime --timeout 15 --output-on-failure --exclude-from-file "$PWD/cmake/probes/windows_toolchain/failed-tests-clang-debug.txt"
+ctest --test-dir build/clang-vs2026-dll/engine/core/kernel/tests/test_runtime --timeout 15 --output-on-failure --exclude-from-file "$PWD/cmake/probes/windows_toolchain/failed-tests-clang-dll-debug.txt"
+```
+
+The exclusions record the observed `WhenAll_NoTimeout` illegal-instruction failure and, only on the DLL route, three EASTL allocator failures. These are deferred tests, not compiler or runtime fixes; see [failed-tests.md](failed-tests.md). Dependency preparation preserves backups and rejects unrecognized headers. It does not change the USD/Qt/TBB binaries or disable compiler diagnostics.

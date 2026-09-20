@@ -16,12 +16,12 @@ Read any component-local `AGENTS.md` before editing that component. Avoid unrela
 
 From the repository root, initialize dependencies with `git submodule update --init --recursive`.
 
-Engine development requires Visual Studio 2022 C++ tools, CMake, and bootstrapped vcpkg with `VCPKG_ROOT` configured. Run these commands from `NauEngineLite/`:
+Engine development requires Visual Studio 2026 C++ tools (v145), CMake 4.2 or newer, and bootstrapped vcpkg with `VCPKG_ROOT` configured. Run these commands from `NauEngineLite/`:
 
 ```powershell
-cmake --preset win_vs2022_x64
-cmake --build build/win_vs2022_x64 --config Debug
-ctest --test-dir build/win_vs2022_x64 -C Debug --output-on-failure
+cmake --preset win_vs2026_x64
+cmake --build build/win_vs2026_x64 --config Debug
+ctest --test-dir build/win_vs2026_x64 -C Debug --output-on-failure
 ```
 
 These configure, compile, and test the engine. Use the editor's own presets when building `NauEditorPublic/`; set `NAU_ENGINE_SOURCE_DIR` to the absolute path of `NauEngineLite/`.

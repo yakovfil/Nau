@@ -36,8 +36,8 @@ browser session. SDK activation was not added to the global PATH.
 
 | Dependency | Version / setup | Verified status |
 | --- | --- | --- |
-| Visual Studio 2022 C++ Build Tools | Installed 17.14.41 with `Microsoft.VisualStudio.Workload.VCTools` and recommended components | Installed alongside existing VS 2026; native C++20 configure/build/run passed |
-| MSVC v143 | Compiler 19.44.35229.0; tool directory 14.44.35207 | Used by Debug/Release minimal runtime builds and lifecycle tests |
+| Visual Studio 2026 C++ tools | VS 18 with Desktop development with C++, x64 tools and Windows SDK; native CMake 4.2+ | Clean minimal Debug/Release builds and lifecycle tests pass; full desktop/editor validation in progress |
+| MSVC v145 | Tested compiler 19.51.36257.0; tool directory 14.51.36231 | Selected explicitly, including when older MSVC tools are installed in VS 2026 |
 | Windows SDK | Test selected 10.0.26100.0 | Available |
 | Desktop generator Python | 3.10.11 with pip | Installed; select with `py -3.10` |
 | Python packages | `cymbal==1.0.0`, `clang==21.1.7` | Installed under Python 3.10; available for desktop generation and the validated scene dependency build |
@@ -127,6 +127,7 @@ copied-package checks do not replace fresh-checkout/environment reproduction.
 These are outside the Emscripten dependency installation performed here:
 
 - Editor: project Qt 6.4.1 MSVC x64 distribution, Debug libraries, Linguist and Svg;
+  prepare its headers with `NauEditorPublic/scripts/prepare_qt_for_msvc.py` for MSVC 14.51.
   OpenUSD 24.08 is fetched by the desktop DLL configuration. See [build.md](build.md).
 - Installer packaging: NSIS and the plugins/redistributables used by the editor
   installer scripts.
@@ -151,8 +152,18 @@ Acceptance uses Python 3.14.2 with `playwright==1.63.0` and **Pillow==12.1.1**
 for PNG/pixel validation, using installed Chrome 153.0.8010.52. These packages
 were already available; no additional installation was required. The focused
 native/Node/Chrome scene suite additionally needs the engine googletest submodule
-and VS 2022 C++ tools. Desktop generation uses Python 3.10 with its `Scripts`
+and VS 2026 C++ tools (v145), with CMake 4.2 or newer. Desktop generation uses Python 3.10 with its `Scripts`
 directory on PATH, `cymbal==1.0.0` and `clang==21.1.7`.
+
+Native MSVC validation uses VS Community 2026 18.10.1, MSVC tools 14.51.36231
+(compiler 19.51.36257.0), Windows SDK 10.0.26100.0 and CMake 4.2.1. The separate
+clang-cl compiler supplied by VS 2026 is LLVM 22.1.3; the Python `clang` package
+is a generator dependency, not that compiler. Prepare the recorded USD/TBB and
+Google Test headers using the [clang-cl setup helper](NauEngineLite/cmake/probes/windows_toolchain/README.md).
+Static and DLL builds pass after preparation. Runtime validation passes 409
+static tests with one exclusion and 406 DLL tests with four exclusions; the
+deferred async/allocator failures remain in [failed-tests.md](failed-tests.md).
+See the [validation record](openspec/changes/archive/2026-09-21-windows-msvc-2026/validation.md) for scope and evidence.
 
 See [NauDemo web](NauEngineLite/doc/naudemo_web.md) for build, serving, fixture,
 relocation and recorded fresh-checkout commands.
