@@ -281,18 +281,18 @@ run Nau. Seven preflight checks passed, including missing/mismatched SDK,
 missing SDK files, direct CMake rejection and native compiler-cache rejection.
 SDK activation metadata remained unchanged during those checks.
 
-See the engine-local [Emscripten guide](NauEngineLite/doc/emscripten_build.md) for
+See the sample [Emscripten guide](NauSamples/doc/emscripten_build.md) for
 fresh installation commands, exact tool versions and the delivery boundary.
 The shared minimal framework now passes native Debug/Release lifecycle tests.
 Browser platform services and the actual sample pass Chrome tests. Use the browser
-presets below; staged packages and relocation remain pending.
+sample build commands below; staged packages and relocation are covered there.
 
 Browser presets `web-minimal-debug` and `web-minimal-release` now exist with
 matching build presets, isolated Ninja caches, and separate `bin`/`lib` paths.
 Both presets configure and build the actual `MinimalAppSample`. Its production
 minimal graph excludes desktop dependencies. The platform checks also retain
 standalone option checks using bundled `xxHash`; sample graph and Chrome checks
-are documented in the [sample guide](NauEngineLite/doc/minimal_app_web.md).
+are documented in the [sample guide](NauSamples/doc/minimal_app_web.md).
 
 The existing desktop `win_vs2022_x64` preset also configured successfully before
 and after the platform changes, without an active emsdk. Its preset definitions
@@ -338,7 +338,7 @@ The independent browser application lifecycle is also implemented; see the
 [validation record](openspec/changes/browser-runtime-lifecycle/validation.md).
 This profile uses bundled
 sources without vcpkg, Qt, USD or Python generator packages. See the
-[profile guide](NauEngineLite/doc/minimal_runtime_profile.md) for dependency lists,
+[profile guide](NauSamples/doc/minimal_runtime_profile.md) for dependency lists,
 graph checks and validation limits. Affected desktop `NauFramework` and
 `PlatformApp` Debug libraries also compile with dependency project builds skipped;
 a full desktop application build remains unverified.
@@ -400,22 +400,20 @@ include five-second 8–12 Hz acceptance, UI heartbeat, real tab hide/show, pend
 work, host loss and isolated negative fixtures. Deterministic timing tests run
 in the 19-test native lifecycle suite. See the [scenario evidence](openspec/changes/browser-runtime-lifecycle/validation.md).
 
-The actual sample now consumes this lifecycle through `web-minimal-*`. From
-`NauEngineLite` with the SDK active:
+The sample project consumes this lifecycle through `web-minimal-*`. From
+the repository root with the SDK active:
 
 ```powershell
-cmake --preset web-minimal-debug
-cmake --build --preset web-minimal-debug --parallel 8
-cmake --preset web-minimal-release
-cmake --build --preset web-minimal-release --parallel 8
-python cmake/probes/minimal_app_web/run.py --build build/web-minimal-debug --scenario success
-python cmake/probes/minimal_app_web/run.py --build build/web-minimal-release --scenario success
+./NauSamples/build_minimal.ps1 -Platform Web -Configuration Debug
+./NauSamples/build_minimal.ps1 -Platform Web -Configuration Release
+python NauSamples/tests/minimal_app_web/run.py --build NauEngineLite/build/web-minimal-debug --scenario success
+python NauSamples/tests/minimal_app_web/run.py --build NauEngineLite/build/web-minimal-release --scenario success
 ```
 
 Use Python with Playwright installed for the runner. Both sample configurations
 pass success, missing-host, host-loss and intentional runner-failure checks.
 Foreground rates measured 9.7830 Hz Debug / 9.7711 Hz Release. The
-[sample guide](NauEngineLite/doc/minimal_app_web.md) covers all scenarios and
+[sample guide](NauSamples/doc/minimal_app_web.md) covers all scenarios and
 [validation evidence](openspec/changes/minimal-app-web/validation.md) records graph
 and regression results. Outputs are `bin/MinimalAppSample.js` and `.wasm` in each
 preset build directory; no separate worker script was emitted by SDK 6.0.9.
@@ -423,7 +421,7 @@ Default browser builds now stage `package/` in each preset directory. Run
 `python build/web-minimal-debug/package/serve.py --port 8000` from the engine
 directory (or use the Release path), then open the printed URL. Copy the entire
 folder to serve elsewhere; `--base-path /relocated/nau/` supports nested URLs.
-The [delivery guide](NauEngineLite/doc/minimal_web_delivery.md) covers controls,
+The [delivery guide](NauSamples/doc/minimal_web_delivery.md) covers controls,
 failure diagnostics and acceptance. Serving needs Python 3.9+ and Chrome only;
 Playwright and the SDK are not serving dependencies. The page checks isolation
 before loading runtime files, exposes real status/Stop/cleanup, and requires
@@ -440,18 +438,16 @@ unverified.
 
 ## NauDemo browser build
 
-From `NauEngineLite/`, with SDK 6.0.9 activated:
+From the repository root, with SDK 6.0.9 activated:
 
 ```powershell
 . "$HOME/emsdk/emsdk_env.ps1"
-cmake --preset web-demo-debug
-cmake --build --preset web-demo-debug --parallel 8
-cmake --preset web-demo-release
-cmake --build --preset web-demo-release --parallel 8
-python build/web-demo-debug/package/serve.py --port 8000
+./NauDemo/web/build.ps1 -Configuration Debug
+./NauDemo/web/build.ps1 -Configuration Release
+python NauEngineLite/build/web-demo-debug/package/serve.py --port 8000
 ```
 
-Open the printed Chrome URL. The `demo` profile retains real Nau scene/assets
+Open the printed Chrome URL. The `scene` profile retains real Nau scene/assets
 and worker-owned WebGL 2 without desktop Graphics/UI/VFX/physics. Its browser
 material is simplified blue diffuse lighting; simulation remains nominally 100 ms
 per update. Stop is asynchronous; reload retries after Stop/failure.
@@ -459,16 +455,16 @@ per update. Stop is asynchronous; reload retries after Stop/failure.
 Both package folders contain runtime, preloaded and loose asset/configuration/
 shader inputs, a hashed manifest and a loopback server. Copy the entire folder;
 `--base-path /games/nau/` supports nested hosting. Source paths and SDK files are
-not requested at runtime. See [NauDemo browser instructions](NauEngineLite/doc/naudemo_web.md)
+not requested at runtime. See [NauDemo browser instructions](NauDemo/doc/naudemo_web.md)
 for exact acceptance and fresh-checkout commands. Native NauDemo now also builds
 from current sources in Debug/Release using its documented CMake hook; native
 appearance and behavior have also been accepted by the user during sample extraction.
 
 ## External samples checkout
 
-All engine samples now live in the sibling `NauSamples` submodule. From this repository root run `git submodule update --init NauSamples` before configuring native samples or the minimal browser app. Sample target names remain unchanged; Windows presets now use `win_vs2026_x64*`. `NAU_SAMPLES_SOURCE_DIR` defaults to that sibling checkout; pass `"-DNAU_SAMPLES_SOURCE_DIR=<absolute path>"` for another location.
+All engine samples now live in the sibling `NauSamples` submodule. From this repository root run `git submodule update --init NauSamples` before configuring native samples or the minimal browser app. Sample target names remain unchanged; Windows presets now use `win_vs2026_x64*`. The engine presets configure the engine alone. Use `NauSamples/cmake/attach_samples.cmake` through `CMAKE_PROJECT_NauEngine_INCLUDE` to add samples; `NauSamples/build_minimal.ps1` does this for the minimal profiles. Pass `"-DNAU_SAMPLES_SOURCE_DIR=<absolute path>"` for another location.
 
-Use a clean configuration after moving from engine-local samples. Native NauDemo also uses the selected sample checkout for common code, shaders and environment assets. Browser NauDemo and engine-only configurations without sample consumers do not require it. Installed SDKs continue to contain a `samples/` directory. See [external sample integration](NauEngineLite/doc/external_samples.md) for paths, SDK behavior and component publication order.
+Use a clean configuration after moving from engine-local samples. Native NauDemo also uses the selected sample checkout for common code, shaders and environment assets. Browser NauDemo and engine-only configurations without sample consumers do not require it. Installed SDKs continue to contain a `samples/` directory. See [external sample integration](NauSamples/doc/external_samples.md) for paths, SDK behavior and component publication order.
 
 ## VS 2026 migration
 

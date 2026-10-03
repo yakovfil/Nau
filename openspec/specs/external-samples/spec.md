@@ -21,10 +21,10 @@ Nau SHALL record NauSamples as a submodule at `NauSamples` using `https://github
 
 ### Requirement: Explicit external sample selection
 
-Engine builds SHALL support a configurable samples source directory, defaulting to the sibling NauSamples checkout. Configurations that require samples SHALL fail with actionable initialization/path guidance when that source is missing or invalid. Configurations with no sample dependency SHALL remain configurable without NauSamples. Configuration SHALL NOT fetch or initialize repositories implicitly or fall back to stale engine-local sources.
+Engine builds SHALL configure without a samples checkout by default. NauSamples SHALL own the hook that registers its configurable source directory with the engine, defaulting to the directory containing that hook. Configurations that select samples SHALL fail with actionable path guidance when the source is missing or invalid. Configuration SHALL NOT fetch or initialize repositories implicitly or fall back to stale engine-local sources.
 
 #### Scenario: Default or custom checkout is used
-- **WHEN** required samples exist at the default sibling location or an explicitly configured different location
+- **WHEN** the NauSamples hook selects its own checkout or an explicitly configured different location
 - **THEN** sample targets use that location, including when the path contains spaces
 
 #### Scenario: Required checkout is unavailable
@@ -32,12 +32,12 @@ Engine builds SHALL support a configurable samples source directory, defaulting 
 - **THEN** configuration fails before compilation and identifies the selected directory and recovery action
 
 #### Scenario: Engine-only configuration is selected
-- **WHEN** samples are disabled and no selected application needs them
+- **WHEN** no external project hook is selected
 - **THEN** the engine configuration does not require a samples checkout
 
 ### Requirement: Preserved build and runtime interfaces
 
-Engine presets SHALL remain supported except that `win_vs2022_x64*` presets SHALL be replaced by corresponding `win_vs2026_x64*` presets for the Windows MSVC baseline migration. Sample target names and configuration-specific binary/package layouts relative to their selected build directories SHALL remain supported. Native samples and native NauDemo SHALL resolve required sample assets, shader inputs and shared support code from the selected checkout. Browser minimal and demo packages SHALL preserve existing rendering, timing, lifecycle and relocation behavior without new desktop dependencies.
+Engine presets SHALL configure the engine without external projects. The `win_vs2022_x64*` presets SHALL be replaced by corresponding `win_vs2026_x64*` presets for the Windows MSVC baseline migration. Project-owned hooks and build scripts SHALL preserve sample target names and configuration-specific binary/package layouts relative to their selected build directories. Native samples and native NauDemo SHALL resolve required sample assets, shader inputs and shared support code from the selected checkout. Browser minimal and demo packages SHALL preserve existing rendering, timing, lifecycle and relocation behavior without new desktop dependencies.
 
 #### Scenario: Native consumers run
 - **WHEN** native samples and NauDemo are built and launched through documented commands using the extracted checkout
@@ -54,11 +54,11 @@ Engine presets SHALL remain supported except that `win_vs2022_x64*` presets SHAL
 
 #### Scenario: Native presets migrate
 - **WHEN** a developer switches from a retired VS 2022 preset to its documented VS 2026 replacement in a clean build directory
-- **THEN** the same sample targets and configuration-relative output layouts remain available using VS 2026/v145
+- **THEN** the same sample targets and configuration-relative output layouts remain available using VS 2026/v145 when the sample hook is selected
 
 ### Requirement: Installed sample distribution remains usable
 
-The native SDK installation SHALL continue to distribute samples under its `samples/` directory with their required support files. Installed-sample build and resource discovery SHALL resolve the installed layout without requiring the original engine or NauSamples source directories.
+The native SDK installation SHALL distribute samples under its `samples/` directory when the sample project is attached during installation. An engine-only SDK installation SHALL remain usable without that directory. Installed-sample build and resource discovery SHALL resolve the installed layout without requiring the original engine or NauSamples source directories.
 
 #### Scenario: Installed SDK is relocated
 - **WHEN** the SDK and its installed samples are copied outside the source checkout and built using the documented installed-SDK workflow

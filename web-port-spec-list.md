@@ -148,7 +148,7 @@ failure. Native sample builds and lifecycle regressions pass.
 
 Build-graph evidence advances `emscripten-build` to **17/24**. The concrete runtime
 inputs for delivery are `build/web-minimal-{debug,release}/bin/MinimalAppSample.js`
-and `.wasm`; see the [sample guide](NauEngineLite/doc/minimal_app_web.md) and
+and `.wasm`; see the [sample guide](NauSamples/doc/minimal_app_web.md) and
 [validation record](openspec/changes/minimal-app-web/validation.md).
 
 The remaining work is complete package staging and stale-output handling,

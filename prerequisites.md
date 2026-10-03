@@ -74,7 +74,7 @@ The active native/browser source boundary uses the selected C++20 toolchain stan
 These are planned project implementations, not packages that an installer can provide:
 
 The `minimal-runtime-profile` prerequisite is implemented and validated natively;
-see [its guide](NauEngineLite/doc/minimal_runtime_profile.md). Current source status:
+see [its guide](NauSamples/doc/minimal_runtime_profile.md). Current source status:
 - `wasm-core-portability` is implemented and validated: see the
   [core build/test guide](NauEngineLite/doc/wasm_core_portability.md). Its independent
   validation uses activated SDK Node 24.19.0 and Python 3 standard-library helpers;
@@ -89,7 +89,7 @@ see [its guide](NauEngineLite/doc/minimal_runtime_profile.md). Current source st
   [lifecycle guide](NauEngineLite/doc/browser_runtime_lifecycle.md).
 - `minimal-app-web` is implemented: the selected sample builds through both browser
   presets and passes actual-sample Chrome acceptance. See the
-  [sample guide](NauEngineLite/doc/minimal_app_web.md). The existing SDK and
+  [sample guide](NauSamples/doc/minimal_app_web.md). The existing SDK and
   Python/Playwright/Chrome installations were reused; no additional dependencies
   were installed. Runner Python is required only for acceptance, not sample builds.
 - `minimal-web-delivery-validation`: browser page/server with isolation headers
@@ -113,7 +113,7 @@ Run its `serve.py --port 8000` and open the printed URL. No SDK, CMake, Ninja,
 vcpkg or Playwright is needed to serve a copied package. The bundled server sends
 the required isolation headers; file URLs and ordinary servers without COOP/COEP
 cannot launch the threaded application. See the
-[delivery guide](NauEngineLite/doc/minimal_web_delivery.md) for nested URLs,
+[delivery guide](NauSamples/doc/minimal_web_delivery.md) for nested URLs,
 another port, Stop/cleanup, reload and missing-file diagnostics. Acceptance uses
 the separately listed Python/Playwright installation. Clean build-directory and
 copied-package checks do not replace fresh-checkout/environment reproduction.
@@ -159,7 +159,7 @@ static tests with one exclusion and 406 DLL tests with four exclusions; the
 deferred async/allocator failures remain in [failed-tests.md](failed-tests.md).
 See the [validation record](openspec/changes/archive/2026-09-21-windows-msvc-2026/validation.md) for scope and evidence.
 
-See [NauDemo web](NauEngineLite/doc/naudemo_web.md) for build, serving, fixture,
+See [NauDemo web](NauDemo/doc/naudemo_web.md) for build, serving, fixture,
 relocation and recorded fresh-checkout commands.
 
 ## NauSamples dependency

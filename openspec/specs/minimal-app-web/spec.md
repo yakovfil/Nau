@@ -9,15 +9,16 @@ in Chrome on Windows, exposes progress and orderly Stop, and coexists with nativ
 
 ### Requirement: Actual minimal sample browser builds
 
-The existing `web-minimal-debug` and `web-minimal-release` presets SHALL configure
-and build the actual minimal sample with the pinned SDK and documented source
-dependencies. The browser target SHALL select `app_sample_main_min.cpp` as its
+The NauSamples build script SHALL attach the sample project to the engine's
+`web-minimal-debug` and `web-minimal-release` presets with the pinned SDK and
+documented source dependencies. Without that hook, the presets SHALL configure
+the engine runtime alone. The browser target SHALL select `app_sample_main_min.cpp` as its
 single entry-point source, use the shared non-rendering runtime and statically
 registered required platform module, and execute the application on a worker.
 The presets SHALL retain separate build outputs and consistent threaded options.
 
 #### Scenario: Both browser presets build the sample
-- **WHEN** a developer activates the supported SDK and builds each browser preset
+- **WHEN** a developer activates the supported SDK and builds each browser configuration through the NauSamples script
 - **THEN** both configurations produce their own actual sample JavaScript/Wasm
   outputs, without the obsolete missing-lifecycle prerequisite rejection
 - **AND** generated source/link inputs identify one selected sample main, the real
