@@ -13,3 +13,6 @@
 [submodule "NauSamples"]
 	path = NauSamples
 	url = https://github.com/yakovfil/NauSamples.git
+[submodule "NauEngineModules"]
+	path = NauEngineModules
+	url = D:/Programming/github/Nau/NauEngineModules

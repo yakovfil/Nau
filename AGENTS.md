@@ -4,7 +4,8 @@
 
 This repository groups engine, editor, documentation, demo and samples submodules; there is no root-level build target.
 
-- `NauEngineLite/`: C++ engine code in `engine/core/`, developer tools in `tools/`, and reusable projects in `project_templates/`. Tests live beside their modules under `tests/`.
+- `NauEngineLite/`: standalone C++ kernel, bundled dependencies, and shared build infrastructure.
+- `NauEngineModules/`: feature modules, application framework, module-dependent tools and templates, and their tests. It attaches through `cmake/attach_modules.cmake`.
 - `NauSamples/`: extracted examples, shared sample support and assets; integrated through engine presets and `NAU_SAMPLES_SOURCE_DIR`.
 - `NauDemo/`: native and browser rotating-cube application.
 - `NauEditorPublic/`: Qt 6/C++20 editor code in `editor/source/`, tests in `editor/tests/`, and localization in `translations/`.
@@ -24,7 +25,7 @@ cmake --build build/win_vs2026_x64 --config Debug
 ctest --test-dir build/win_vs2026_x64 -C Debug --output-on-failure
 ```
 
-These configure, compile, and test the engine. Use the editor's own presets when building `NauEditorPublic/`; set `NAU_ENGINE_SOURCE_DIR` to the absolute path of `NauEngineLite/`.
+These configure and compile the standalone kernel. For the full module graph, pass `-DCMAKE_PROJECT_NauEngine_INCLUDE=<absolute path to NauEngineModules/cmake/attach_modules.cmake>` to the configure command. Use the editor's own presets when building `NauEditorPublic/`; set `NAU_ENGINE_SOURCE_DIR` to the absolute path of `NauEngineLite/` and `NAU_MODULES_SOURCE_DIR` to `NauEngineModules/`.
 
 For documentation, install the Sphinx dependencies listed in `NauDocsPublic/README.md`, then run `sphinx-build -M html source/beta/user-doc build/beta/user-doc` from `NauDocsPublic/`.
 
@@ -34,7 +35,7 @@ Follow neighboring code and component conventions. The engine's `.clang-format` 
 
 ## Testing Guidelines
 
-C++ unit tests use Google Test; editor UI tests use Qt Test. Follow existing patterns such as engine `test_*.cpp` and editor `nau_*_tests.cpp`. Add regression tests for behavior changes and run affected suites. Engine tests require `NAU_CORE_TESTS=ON`. No root-level coverage threshold is defined. Prefer portable CTest commands over the machine-specific paths in `run_tests.bat`.
+C++ unit tests use Google Test; editor UI tests use Qt Test. Follow existing patterns such as module `test_*.cpp` and editor `nau_*_tests.cpp`. Add regression tests for behavior changes and run affected suites. Module tests require `NAU_CORE_TESTS=ON` and the modules hook. No root-level coverage threshold is defined. Prefer portable CTest commands over the machine-specific paths in `run_tests.bat`.
 
 ## Commit & Pull Request Guidelines
 
