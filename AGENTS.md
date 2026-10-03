@@ -4,8 +4,8 @@
 
 This repository groups engine, editor, documentation, demo and samples submodules; there is no root-level build target.
 
-- `NauEngineLite/`: standalone C++ kernel, bundled dependencies, and shared build infrastructure.
-- `NauEngineModules/`: feature modules, application framework, module-dependent tools and templates, and their tests. It attaches through `cmake/attach_modules.cmake`.
+- `NauEngineLite/`: standalone C++ kernel, application framework sources and tests, bundled dependencies, and shared build infrastructure.
+- `NauEngineModules/`: feature modules, their tests, module-dependent tools and templates, and module build integration. It attaches through `cmake/attach_modules.cmake` and enables the engine's application framework and lifecycle tests.
 - `NauSamples/`: extracted examples, shared sample support and assets; integrated through engine presets and `NAU_SAMPLES_SOURCE_DIR`.
 - `NauDemo/`: native and browser rotating-cube application.
 - `NauEditorPublic/`: Qt 6/C++20 editor code in `editor/source/`, tests in `editor/tests/`, and localization in `translations/`.
