@@ -1,0 +1,76 @@
+{
+  "captured_utc": "2026-09-20T21:43:42.739261+00:00",
+  "repositories": {
+    ".": {
+      "revision": "00e51202344dbf34063fb53fa155a46c8265e5d9",
+      "status": "?? openspec/changes/replace-eastl-with-std/",
+      "branch": "main"
+    },
+    "NauEngineLite": {
+      "revision": "cb91f64c12005a6213794cd48320c3ad23da575d",
+      "status": "",
+      "branch": "main"
+    },
+    "NauEditorPublic": {
+      "revision": "ed1fc730600eafd3c58a5ead33382a5aa9eeabe5",
+      "status": "",
+      "branch": "chore/editor-updates"
+    },
+    "NauSamples": {
+      "revision": "0ed130743e375ea40cc1c8913e68d4ee376babc6",
+      "status": "",
+      "branch": "main"
+    },
+    "NauDemo": {
+      "revision": "5385bbb19b298715b5bba44d97bc1fde9039f5a3",
+      "status": "",
+      "branch": "main"
+    }
+  },
+  "tools": {
+    "cmake": {
+      "exit": 0,
+      "stdout": "cmake version 4.2.1\n\nCMake suite maintained and supported by Kitware (kitware.com/cmake).",
+      "stderr": ""
+    },
+    "clang": {
+      "exit": 0,
+      "stdout": "clang version 22.1.3 (https://github.com/llvm/llvm-project e9846648fd6183ee6d8cbdb4502213fcf902a211)\nTarget: x86_64-pc-windows-msvc\nThread model: posix\nInstalledDir: C:\\Program Files\\Microsoft Visual Studio\\18\\Community\\VC\\Tools\\Llvm\\x64\\bin",
+      "stderr": ""
+    }
+  },
+  "stl_headers": {
+    "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.51.36231/include/yvals_core.h": {
+      "sha256": "10b59d42bde2105e76cf16735e34dd0f1d45a943cb1b789c4a0406c67c2bd684",
+      "versions": [
+        "#define _MSVC_STL_VERSION 145",
+        "#define _MSVC_STL_UPDATE  202604L"
+      ]
+    },
+    "C:/Users/Yakov/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__config": {
+      "sha256": "74c873013495a1f6e4b14f1dfd67c39a6cd027028b4c3473c5287b8ddd22e3c2",
+      "versions": [
+        "#  define _LIBCPP_VERSION 220108"
+      ]
+    }
+  },
+  "exclusions": {
+    "NauEngineLite/cmake/probes/windows_toolchain/failed-tests-release.txt": {
+      "sha256": "32a407fa42f02f521913f24108f46c24b654fc6970d3aa99288761f0163a23ce",
+      "text": "TestSpinLock.MultipleSubsequentLockMustFail\nTestSpinLock.DestructWhileLockedMustFail\nTestRecursiveSpinLock.DestructWhileLockedMustFail\nTestAssetPath.ConstructFromInvalidString\nTestAssetPath.SetScheme\nTestAssetPath.SetContainerPath\n"
+    },
+    "NauEngineLite/cmake/probes/windows_toolchain/failed-tests-clang-debug.txt": {
+      "sha256": "ae45e5e2c52345826558e159fb275adc7a6f9eb725f4d3246ec520063fd90cbd",
+      "text": "TestAsyncFunctions.WhenAll_NoTimeout\n"
+    },
+    "NauEngineLite/cmake/probes/windows_toolchain/failed-tests-clang-dll-debug.txt": {
+      "sha256": "42d015e918100485ac0d61b378abcc7a89e2a9ce1d0812abdb89c91d0d536497",
+      "text": "TestAsyncFunctions.WhenAll_NoTimeout\nEastlAllocator.AlignmentAndOffsets\nEastlAllocator.ReallocationPreservesDataAndAlignment\nEastlAllocator.RejectsInvalidAndOverflowingRequests\n"
+    },
+    "NauEditorPublic/scripts/failed-tests-release.txt": {
+      "sha256": "cc00e38a79eb67b10b4ac41f7084aad726396dcb91ca95f2ecb3221fc957cc54",
+      "text": "NauSettingsDeathTests.invalidRecentLauncherOutputDirectory\nNauSettingsDeathTests.invalidRecentProjectDirectory\nNauEditorVersionDeathTests.checkVersionFromInvalidText\nNauEditorVersionDeathTests.checkVersionFromTextInvalidFormat\n"
+    }
+  },
+  "failure_ledger_sha256": "7f08ea69da18fdd2fa303fec482d0aa1e22ec6853f5b9137498002ed41348343"
+}

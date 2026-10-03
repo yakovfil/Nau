@@ -2,6 +2,25 @@
 
 These instructions cover Windows x64 builds of `NauEngineLite` and `NauEditorPublic` using Visual Studio 2026 and PowerShell, plus the Emscripten toolchain checks below. Run commands one at a time and continue only after each succeeds. The repository root has no CMake project; configure each component separately. See [prerequisites.md](prerequisites.md) for required tools, exact SDK versions, installation status and remaining source prerequisites.
 
+## Standard-library migration
+
+The engine, editor, samples and demo use the selected C++20 toolchain standard library. EASTL is not an active source, SDK, or build dependency; old EASTL-based binaries are not ABI-compatible with the migrated interfaces. EABase was also removed after the independent consumer audit found no remaining active use. Nau adapters retain the required frame, stack, pool, aligned, inline, sorted, bit, intrusive and bounded-callback contracts where the standard library alone is insufficient.
+
+After changing the migration, configure each affected component into a fresh build directory and rebuild all engine, editor, sample, and demo consumers with the same toolchain and configuration. Do not mix pre-migration libraries with migrated headers or Debug/Release artifacts. The standard migration matrix uses these roots:
+
+```powershell
+# From NauEngineLite
+cmake --preset win_vs2026_x64 -B build/replace-eastl-msvc-static
+cmake --build build/replace-eastl-msvc-static --config Debug
+cmake --build build/replace-eastl-msvc-static --config Release
+
+cmake --preset win_vs2026_x64_dll -B build/replace-eastl-msvc-dll
+cmake --build build/replace-eastl-msvc-dll --config Debug
+cmake --build build/replace-eastl-msvc-dll --config Release
+```
+
+If a DLL configure cannot download the recorded USD archive because of a transient network or certificate failure, pass `-DFETCHCONTENT_SOURCE_DIR_USD=<path-to-usd24.08-root>` to use an already provisioned local package. The path must contain `pxrConfig.cmake`; do not disable certificate verification or reuse an incomplete download directory. The same source/ABI rule applies to the editor, generated projects, and installed SDK samples. Use the component-specific commands below, and do not copy build outputs or CMake caches from a pre-migration tree. Exact results, exclusions, compiler identities, and remaining acceptance boundaries are recorded in [the migration validation record](openspec/changes/archive/2026-10-03-replace-eastl-with-std/validation.md).
+
 ## 1. Install prerequisites
 
 Install the following before configuring either project:
@@ -471,4 +490,4 @@ ctest --test-dir build/clang-vs2026-static/engine/core/kernel/tests/test_runtime
 ctest --test-dir build/clang-vs2026-dll/engine/core/kernel/tests/test_runtime --timeout 15 --output-on-failure --exclude-from-file "$PWD/cmake/probes/windows_toolchain/failed-tests-clang-dll-debug.txt"
 ```
 
-The exclusions record the observed `WhenAll_NoTimeout` illegal-instruction failure and, only on the DLL route, three EASTL allocator failures. These are deferred tests, not compiler or runtime fixes; see [failed-tests.md](failed-tests.md). Dependency preparation preserves backups and rejects unrecognized headers. It does not change the USD/Qt/TBB binaries or disable compiler diagnostics.
+The exclusions record the observed `WhenAll_NoTimeout` illegal-instruction failure and, only on the DLL route, three legacy allocator failures whose test names remain in the historical failure ledger. These are deferred tests, not compiler or runtime fixes; see [failed-tests.md](failed-tests.md). Dependency preparation preserves backups and rejects unrecognized headers. It does not change the USD/Qt/TBB binaries or disable compiler diagnostics. For clang-cl, the platform flags retain `/clang:-Wno-option-ignored` for the bundled Google Test headers and omit `/JMC`, which clang-cl reports as an ignored option when no debug information is requested; this does not weaken MSVC warning settings.

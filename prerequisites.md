@@ -1,8 +1,6 @@
 # Build prerequisites
 
-Installation record: 2026-09-19; sample verification updated 2026-09-20. These requirements cover the
-`emscripten-build` change and its native Windows validation. Editor and packaging
-requirements are listed separately. See [build.md](build.md) for commands.
+Installation record: 2026-09-19; standard-library migration verification updated 2026-09-24. These requirements cover the C++20 toolchain-standard-library migration, the `emscripten-build` change, and native Windows validation. Editor and packaging requirements are listed separately. See [build.md](build.md) for commands.
 
 ## Browser toolchain
 
@@ -69,11 +67,7 @@ is broader than the implemented minimal profile; its exact selection is in
 `NauEngineLite/cmake/NauMinimalRuntime.cmake`. Existing editor dependency revision differences and
 uninitialized optional OpenSSL submodules were left untouched.
 
-The minimal runtime uses EABase, EASTL, tiny-utf8, fmt, utfcpp, ModifiedSonyMath,
-jsoncpp, wyhash and fast_float. The explicit minimal kernel manifest excludes the
-unused compression/asset IO groups. Focused tests additionally require bundled
-googletest; the core serialization suite also uses its googlemock component. These are source
-libraries, not additional system installations.
+The active native/browser source boundary uses the selected C++20 toolchain standard library plus the retained bundled libraries required by the selected graph: tiny-utf8, fmt, utfcpp, ModifiedSonyMath, jsoncpp, wyhash and fast_float. EASTL and EABase are not active engine, editor, sample, demo, or SDK dependencies. The explicit minimal kernel manifest excludes the unused compression/asset IO groups. Focused tests additionally require bundled googletest; the core serialization suite also uses its googlemock component. These are source libraries, not additional system installations.
 
 ## Source prerequisites still required
 
@@ -133,7 +127,7 @@ These are outside the Emscripten dependency installation performed here:
   installer scripts.
 - Documentation: Sphinx and the dependencies in `NauDocsPublic/README.md`.
 
-No editor, renderer, NauDemo, or unrelated submodule implementation was modified.
+The current standard-library migration is source/ABI breaking. Rebuild the engine, editor, samples, demo, generated projects, and installed SDK consumers together with matching headers and libraries; do not reuse pre-migration build caches or binaries. The exact migration matrix and recorded exclusions are in [the migration validation record](openspec/changes/archive/2026-10-03-replace-eastl-with-std/validation.md).
 
 
 ## NauDemo web additions

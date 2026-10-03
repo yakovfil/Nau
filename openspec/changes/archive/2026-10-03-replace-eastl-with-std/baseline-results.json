@@ -1,0 +1,74 @@
+[
+  {
+    "configuration": "Debug",
+    "case": "containers",
+    "command": [
+      "D:\\Programming\\github\\Nau\\NauEngineLite\\build\\replace-eastl-baseline\\Debug\\eastl_baseline.exe"
+    ],
+    "exe_sha256": "3319ed6f31add8850335b6ab13c94b2e41208f63d63e64959015e82a4106b831",
+    "exit": 0,
+    "stdout": "PASS: vector inline capacity\nvector observation: allocations=1 first=10 alive=3 size=3\nPASS: vector overflow and lifetime\nPASS: vector destruction\nPASS: fixed string overflow terminator\nPASS: map inline nodes\nPASS: map overflow stable node\nPASS: unique duplicate policy\nPASS: multi duplicate policy\nPASS: bits shrink and regrow\nPASS: tuple columns row erase\nPASS: tuple field destruction\nPASS: intrusive identity unlink\nPASS: fixed callback copy invoke\nPASS: callback destruction\nPASS: intrusive reference move\nPASS: intrusive final pool return\nPASS: LRU hit promotion eviction\nPASS: LRU clear releases\nPASS: LRU destruction no double release\n",
+    "stderr": ""
+  },
+  {
+    "configuration": "Debug",
+    "case": "trivial-assignment",
+    "command": [
+      "D:\\Programming\\github\\Nau\\NauEngineLite\\build\\replace-eastl-baseline\\Debug\\eastl_baseline.exe",
+      "--trivial-assignment"
+    ],
+    "exe_sha256": "3319ed6f31add8850335b6ab13c94b2e41208f63d63e64959015e82a4106b831",
+    "exit": 1,
+    "stdout": "observed alive=1 expected=3\n",
+    "stderr": "FAILED: nontrivial construction with trivial assignment\n"
+  },
+  {
+    "configuration": "Debug",
+    "case": "existing-values",
+    "exe_sha256": "70802820db9aaea138566d5d2f1033fb601bc0222d823a0f9f23cc0690dd2571",
+    "exit": 0,
+    "summary": [
+      "[----------] 12 tests from TestUid (0 ms total)",
+      "",
+      "[----------] Global test environment tear-down",
+      "[==========] 50 tests from 4 test suites ran. (4 ms total)",
+      "[  PASSED  ] 50 tests."
+    ]
+  },
+  {
+    "configuration": "Release",
+    "case": "containers",
+    "command": [
+      "D:\\Programming\\github\\Nau\\NauEngineLite\\build\\replace-eastl-baseline\\Release\\eastl_baseline.exe"
+    ],
+    "exe_sha256": "763191cbe3a38b178c1a168f099eae9991388f0383d7924793e999f000bc84a0",
+    "exit": 0,
+    "stdout": "PASS: vector inline capacity\nvector observation: allocations=1 first=10 alive=3 size=3\nPASS: vector overflow and lifetime\nPASS: vector destruction\nPASS: fixed string overflow terminator\nPASS: map inline nodes\nPASS: map overflow stable node\nPASS: unique duplicate policy\nPASS: multi duplicate policy\nPASS: bits shrink and regrow\nPASS: tuple columns row erase\nPASS: tuple field destruction\nPASS: intrusive identity unlink\nPASS: fixed callback copy invoke\nPASS: callback destruction\nPASS: intrusive reference move\nPASS: intrusive final pool return\nPASS: LRU hit promotion eviction\nPASS: LRU clear releases\nPASS: LRU destruction no double release\n",
+    "stderr": ""
+  },
+  {
+    "configuration": "Release",
+    "case": "trivial-assignment",
+    "command": [
+      "D:\\Programming\\github\\Nau\\NauEngineLite\\build\\replace-eastl-baseline\\Release\\eastl_baseline.exe",
+      "--trivial-assignment"
+    ],
+    "exe_sha256": "763191cbe3a38b178c1a168f099eae9991388f0383d7924793e999f000bc84a0",
+    "exit": 1,
+    "stdout": "observed alive=1 expected=3\n",
+    "stderr": "FAILED: nontrivial construction with trivial assignment\n"
+  },
+  {
+    "configuration": "Release",
+    "case": "existing-values",
+    "exe_sha256": "94241b1fd6a2d3479e8281526fd265d68e3b0c066fa1ec9d535b209a45f2e2d6",
+    "exit": 0,
+    "summary": [
+      "[----------] 12 tests from TestUid (0 ms total)",
+      "",
+      "[----------] Global test environment tear-down",
+      "[==========] 50 tests from 4 test suites ran. (1 ms total)",
+      "[  PASSED  ] 50 tests."
+    ]
+  }
+]

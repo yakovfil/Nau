@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "native",
+    "configuration": "debug",
+    "command": [
+      "D:\\Programming\\github\\Nau\\NauEngineLite\\build\\core-native-debug\\bin\\Debug\\NauCorePortabilityTests.exe",
+      "--gtest_filter=CorePortability.StringUidJsonRoundTrips:CorePortability.ValidUtfRoundTrip:CorePortability.InvalidUtfIsEmptyAndDiagnostic:CorePortability.UidFixturesAndWorkers"
+    ],
+    "binary_sha256": "7511e4be2111ff216e7c9070e271f535e6b061b4b579601ca7bad934e5ac6295",
+    "exit": 0,
+    "output": "Running main() from D:\\Programming\\github\\Nau\\NauEngineLite\\engine\\3rdparty_libs\\googletest\\googletest\\src\\gtest_main.cc\nNote: Google Test filter = CorePortability.StringUidJsonRoundTrips:CorePortability.ValidUtfRoundTrip:CorePortability.InvalidUtfIsEmptyAndDiagnostic:CorePortability.UidFixturesAndWorkers\n[==========] Running 3 tests from 1 test suite.\n[----------] Global test environment set-up.\n[----------] 3 tests from CorePortability\n[ RUN      ] CorePortability.StringUidJsonRoundTrips\n[       OK ] CorePortability.StringUidJsonRoundTrips (1 ms)\n[ RUN      ] CorePortability.ValidUtfRoundTrip\n[       OK ] CorePortability.ValidUtfRoundTrip (0 ms)\n[ RUN      ] CorePortability.UidFixturesAndWorkers\n[       OK ] CorePortability.UidFixturesAndWorkers (0 ms)\n[----------] 3 tests from CorePortability (2 ms total)\n\n[----------] Global test environment tear-down\n[==========] 3 tests from 1 test suite ran. (2 ms total)\n[  PASSED  ] 3 tests.\n",
+    "stderr": ""
+  },
+  {
+    "kind": "wasm",
+    "configuration": "debug",
+    "command": [
+      "C:\\Users\\Yakov\\emsdk\\node\\24.19.0_64bit\\node.exe",
+      "D:\\Programming\\github\\Nau\\NauEngineLite\\build\\wasm-core-debug\\bin\\NauCorePortabilityTests.js",
+      "--gtest_filter=CorePortability.StringUidJsonRoundTrips:CorePortability.ValidUtfRoundTrip:CorePortability.InvalidUtfIsEmptyAndDiagnostic:CorePortability.UidFixturesAndWorkers"
+    ],
+    "binary_sha256": "82d79c703d36796d987178e001dc5a8af4605999327c74f52d3f09504e308c4e",
+    "exit": 0,
+    "output": "Running main() from D:/Programming/github/Nau/NauEngineLite/engine/3rdparty_libs/googletest/googletest/src/gtest_main.cc\nNote: Google Test filter = CorePortability.StringUidJsonRoundTrips:CorePortability.ValidUtfRoundTrip:CorePortability.InvalidUtfIsEmptyAndDiagnostic:CorePortability.UidFixturesAndWorkers\n[==========] Running 4 tests from 1 test suite.\n[----------] Global test environment set-up.\n[----------] 4 tests from CorePortability\n[ RUN      ] CorePortability.StringUidJsonRoundTrips\n[       OK ] CorePortability.StringUidJsonRoundTrips (13 ms)\n[ RUN      ] CorePortability.InvalidUtfIsEmptyAndDiagnostic\n[       OK ] CorePortability.InvalidUtfIsEmptyAndDiagnostic (1 ms)\n[ RUN      ] CorePortability.ValidUtfRoundTrip\n[       OK ] CorePortability.ValidUtfRoundTrip (1 ms)\n[ RUN      ] CorePortability.UidFixturesAndWorkers\n[       OK ] CorePortability.UidFixturesAndWorkers (39 ms)\n[----------] 4 tests from CorePortability (56 ms total)\n\n[----------] Global test environment tear-down\n[==========] 4 tests from 1 test suite ran. (58 ms total)\n[  PASSED  ] 4 tests.\n",
+    "stderr": ""
+  },
+  {
+    "kind": "native",
+    "configuration": "release",
+    "command": [
+      "D:\\Programming\\github\\Nau\\NauEngineLite\\build\\core-native-release\\bin\\Release\\NauCorePortabilityTests.exe",
+      "--gtest_filter=CorePortability.StringUidJsonRoundTrips:CorePortability.ValidUtfRoundTrip:CorePortability.InvalidUtfIsEmptyAndDiagnostic:CorePortability.UidFixturesAndWorkers"
+    ],
+    "binary_sha256": "d7c7bcc9b5453fdd0d7d7de1b77abdd557031ea55ab386976475ff63f401b0ff",
+    "exit": 0,
+    "output": "Running main() from D:\\Programming\\github\\Nau\\NauEngineLite\\engine\\3rdparty_libs\\googletest\\googletest\\src\\gtest_main.cc\nNote: Google Test filter = CorePortability.StringUidJsonRoundTrips:CorePortability.ValidUtfRoundTrip:CorePortability.InvalidUtfIsEmptyAndDiagnostic:CorePortability.UidFixturesAndWorkers\n[==========] Running 3 tests from 1 test suite.\n[----------] Global test environment set-up.\n[----------] 3 tests from CorePortability\n[ RUN      ] CorePortability.StringUidJsonRoundTrips\n[       OK ] CorePortability.StringUidJsonRoundTrips (0 ms)\n[ RUN      ] CorePortability.ValidUtfRoundTrip\n[       OK ] CorePortability.ValidUtfRoundTrip (0 ms)\n[ RUN      ] CorePortability.UidFixturesAndWorkers\n[       OK ] CorePortability.UidFixturesAndWorkers (0 ms)\n[----------] 3 tests from CorePortability (0 ms total)\n\n[----------] Global test environment tear-down\n[==========] 3 tests from 1 test suite ran. (1 ms total)\n[  PASSED  ] 3 tests.\n",
+    "stderr": ""
+  },
+  {
+    "kind": "wasm",
+    "configuration": "release",
+    "command": [
+      "C:\\Users\\Yakov\\emsdk\\node\\24.19.0_64bit\\node.exe",
+      "D:\\Programming\\github\\Nau\\NauEngineLite\\build\\wasm-core-release\\bin\\NauCorePortabilityTests.js",
+      "--gtest_filter=CorePortability.StringUidJsonRoundTrips:CorePortability.ValidUtfRoundTrip:CorePortability.InvalidUtfIsEmptyAndDiagnostic:CorePortability.UidFixturesAndWorkers"
+    ],
+    "binary_sha256": "18483f881793f59699d008ef547d4917dbeda02e0a7c8d02b4091a09d54f85c3",
+    "exit": 0,
+    "output": "Running main() from D:/Programming/github/Nau/NauEngineLite/engine/3rdparty_libs/googletest/googletest/src/gtest_main.cc\nNote: Google Test filter = CorePortability.StringUidJsonRoundTrips:CorePortability.ValidUtfRoundTrip:CorePortability.InvalidUtfIsEmptyAndDiagnostic:CorePortability.UidFixturesAndWorkers\n[==========] Running 4 tests from 1 test suite.\n[----------] Global test environment set-up.\n[----------] 4 tests from CorePortability\n[ RUN      ] CorePortability.StringUidJsonRoundTrips\n[       OK ] CorePortability.StringUidJsonRoundTrips (4 ms)\n[ RUN      ] CorePortability.InvalidUtfIsEmptyAndDiagnostic\n[       OK ] CorePortability.InvalidUtfIsEmptyAndDiagnostic (0 ms)\n[ RUN      ] CorePortability.ValidUtfRoundTrip\n[       OK ] CorePortability.ValidUtfRoundTrip (0 ms)\n[ RUN      ] CorePortability.UidFixturesAndWorkers\n[       OK ] CorePortability.UidFixturesAndWorkers (31 ms)\n[----------] 4 tests from CorePortability (37 ms total)\n\n[----------] Global test environment tear-down\n[==========] 4 tests from 1 test suite ran. (38 ms total)\n[  PASSED  ] 4 tests.\n",
+    "stderr": ""
+  }
+]
