@@ -1,0 +1,37 @@
+{
+  "state": "uncommitted implementation validated on 2026-10-04",
+  "files": [
+    {
+      "path": "NauEngineModules/modules/ui/CMakeLists.txt",
+      "sha256": "de303438350f7497634cef2efc37f0e6911c2b7f3f71240795d3935b4197fe25"
+    },
+    {
+      "path": "NauEngineModules/modules/ui/include/nau/ui/nau_widget.h",
+      "sha256": "092acaf827780565416281e107470c6c34076b841bd3e2e7a923f29cac1d3093"
+    },
+    {
+      "path": "NauEngineModules/modules/ui/README.md",
+      "sha256": "c9a87bc921abc031549cc3b7b33f53b6fe7e00e6c525668e4a333c2229b3a5c0"
+    },
+    {
+      "path": "NauEngineModules/modules/ui/src/nau_widget.cpp",
+      "sha256": "46252235bd1362d55b7eba54f70d19fc6695313dd1edab29b01d63b4e12adda5"
+    },
+    {
+      "path": "NauEngineModules/modules/ui/tests/consumer/CMakeLists.txt",
+      "sha256": "4c6160197310d28113453f3b1b2f1f8859c267bb2681d433ec23a26fa3c2e121"
+    },
+    {
+      "path": "NauEngineModules/modules/ui/tests/consumer/main.cpp",
+      "sha256": "f3cd610bf3fa6dbf8f55cdb42d3ecd912a15e5351a2a1c6384584256e8f2fc97"
+    },
+    {
+      "path": "NauEngineModules/modules/ui/tests/consumer/runtime.cmake",
+      "sha256": "c7468fb0410a166057a1a1cfdbb4e26acba6e20cb9b0808a7ad75d7307614d51"
+    },
+    {
+      "path": "NauEngineModules/modules/ui/tests/test_widget.cpp",
+      "sha256": "aed9745969f3cab3f3919dd2e3c4057252b815073a995c385bbb96ce978cd62e"
+    }
+  ]
+}
