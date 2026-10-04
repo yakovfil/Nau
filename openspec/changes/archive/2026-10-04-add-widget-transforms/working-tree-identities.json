@@ -1,0 +1,22 @@
+[
+    {
+        "path":  "NauEngineModules/modules/ui/include/nau/ui/nau_widget.h",
+        "sha256":  "b9723c76677d51c7185bb882107b1f33322ee4c2799e700e3ec5b6ee56810f7f"
+    },
+    {
+        "path":  "NauEngineModules/modules/ui/src/nau_widget.cpp",
+        "sha256":  "043b9d9d08b3857729c10f21020934df8d628c4c65812134a46cbc9e27f53e01"
+    },
+    {
+        "path":  "NauEngineModules/modules/ui/tests/test_widget.cpp",
+        "sha256":  "eb7b069bc641355fec1e2f9aa2758ef0babdebe1a8045a3bf4978723e0d745a9"
+    },
+    {
+        "path":  "NauEngineModules/modules/ui/tests/consumer/main.cpp",
+        "sha256":  "0c8258e922796dc3ca7fb53e1d11f820330b843164122419d2428913b8820c52"
+    },
+    {
+        "path":  "NauEngineModules/modules/ui/README.md",
+        "sha256":  "01342d1120b9a836de293bd73f2ed37995a8a1e505e5cff5ea8c40ba60720cfe"
+    }
+]
