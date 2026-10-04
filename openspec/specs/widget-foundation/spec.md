@@ -8,119 +8,107 @@ Provide a portable basic widget with explicit tree ownership and queryable state
 
 ### Requirement: Basic widget state and stable identity
 
-The foundation SHALL expose `nau::ui::NauWidget` as a NauObject-compatible type with engine runtime type identification, an inherited UID, optional debug name, and local visibility. Supported creation SHALL return exclusive engine ownership using allocator-aware construction, with a generated non-null UID. Direct stack construction and standard unique-pointer construction SHALL NOT be supported. New widgets SHALL be visible, unnamed, parentless, and childless. Distinct freshly created widgets SHALL have distinct identities. A widget SHALL NOT be copyable or movable as an object; transferring its ownership SHALL preserve its identity and address. Widget state and hierarchy operations SHALL NOT reassign UID; explicit inherited UID reassignment is outside this stability guarantee. The former Widget type and numeric id() API SHALL be replaced without compatibility aliases.
+The foundation SHALL expose NauWidget as a SceneObject-derived type with engine runtime type compatibility with SceneObject and NauObject, an inherited UID and scene object name, and local UI visibility. Supported direct creation SHALL use allocator-aware exclusive engine ownership. Direct stack and standard unique-pointer construction SHALL remain unsupported. New widgets SHALL be visible, unnamed, parentless, childless, and have a root scene component. Widgets SHALL NOT be copyable or movable as objects. State edits, attachment, and reparenting SHALL preserve address and UID; explicit UID reassignment and scene duplication are outside this guarantee. Widget-specific naming SHALL be replaced by the scene naming API without duplicate name storage.
 
 #### Scenario: Independent widgets are constructed
 - **WHEN** two widgets are created through the supported factory
-- **THEN** each has the specified defaults, a distinct non-null UID, exclusive engine ownership, and runtime type compatibility with NauObject
+- **THEN** each has the specified defaults, a distinct non-null UID, exclusive engine ownership, and runtime type compatibility with SceneObject and NauObject
 
 #### Scenario: State changes and ownership transfer
-- **WHEN** a widget is renamed, hidden, detached, and attached to another parent
-- **THEN** its identity and address remain unchanged and its local name and visibility are retained
+- **WHEN** a widget is renamed, hidden, attached, and reparented using scene operations
+- **THEN** its identity and address remain unchanged and its scene name and local visibility are retained
 
 ### Requirement: Parent-owned ordered hierarchy
 
-A parent SHALL exclusively own its attached children through engine object ownership handles and expose them in attachment order. Each child SHALL retain a non-owning engine weak reference to its immediate parent. Successful attachment SHALL transfer ownership from the caller, append the child, and establish its parent reference. Public access SHALL NOT allow callers to replace parent references or mutate the ownership container independently of hierarchy operations. Borrowed access through a const widget SHALL NOT expose mutable parent or child pointers.
+Widgets SHALL use the existing scene hierarchy and ownership APIs with a single parent relationship and ordered children. A widget SHALL support both ordinary scene objects and widgets as parents or children. Attachment SHALL transfer exclusive ownership to the parent and append in scene child order. Parent/child access and mutation preconditions SHALL follow SceneObject behavior; no separate widget-only hierarchy or stronger const-access contract SHALL be maintained.
 
 #### Scenario: Child is attached
-- **WHEN** a caller transfers an unattached child to a parent with existing children
-- **THEN** the caller relinquishes ownership, the child references that parent, and existing children precede it in their original order
-
-### Requirement: Invalid attachment preserves ownership
-
-Attachment SHALL reject empty ownership, self-attachment, an already-parented child, and any operation that would create a hierarchy cycle. Rejection SHALL report failure without changing existing relationships, child order, or the caller's ownership. Callers MUST supply valid exclusive ownership; manufacturing a second owner from a borrowed pointer is outside the API contract.
-
-#### Scenario: Empty child is supplied
-- **WHEN** attachment is requested with empty ownership
-- **THEN** it fails and the parent's child list remains unchanged
-
-#### Scenario: Root is offered to itself or its descendant
-- **WHEN** the caller offers its valid owning root handle to that root or a descendant of that root
-- **THEN** attachment fails, the caller retains the root, and the entire tree remains unchanged
-
-### Requirement: Detachment returns ownership
-
-Removing a direct child SHALL return exclusive ownership of its intact subtree and clear only that child's parent reference. Remaining siblings SHALL retain their relative order. Removing a widget that is not a direct child SHALL return no ownership and leave all trees unchanged.
-
-#### Scenario: Middle child is removed and reattached
-- **WHEN** a middle child with descendants is removed and then attached to another parent
-- **THEN** it survives with the same descendants and identity, its parent reference changes through an unattached state, and the original siblings retain their order
-
-#### Scenario: Non-child removal is requested
-- **WHEN** removal is requested for an unrelated widget or a non-direct descendant
-- **THEN** no ownership is returned and no parent reference or child list changes
+- **WHEN** a caller transfers an unattached widget to an ordinary scene object or widget with existing children
+- **THEN** the caller relinquishes ownership and scene traversal reports that parent and the new child after existing children
 
 ### Requirement: Owned subtree lifetime
 
-Releasing a widget's exclusive owner SHALL destroy it and all still-attached descendants exactly once using their recorded concrete destructors and allocators. Detached subtrees SHALL survive destruction of their former parent while retained by their new owner. A child's parent reference SHALL be cleared before the parent initiates that child's destruction. Parent references and other borrowed widget pointers SHALL NOT extend object lifetime. Destruction SHALL remain owner-controlled: the direct destroy() operation SHALL NOT be public on the widget interface; invoking it through normal virtual dispatch on the base object interface SHALL terminate the process in every build configuration rather than delete an owned widget. Explicit qualified base calls that bypass virtual dispatch are outside the supported widget API.
+Widgets SHALL adopt existing SceneObject lifetime behavior for exclusive owners, scene ownership, explicit destruction, component activation, and asynchronous deactivation. Releasing an inactive owning root SHALL destroy its owned hierarchy and components through engine ownership. Removing an attached child SHALL destroy it through scene lifecycle handling. Reparenting a subtree away SHALL preserve it when its former parent is destroyed. Borrowed and weak references SHALL NOT extend lifetime. The widget-specific abort-on-destroy override SHALL be removed; explicit destruction through the base interface SHALL follow normal scene behavior with the required services initialized.
 
 #### Scenario: Tree owner releases a root
-- **WHEN** the owner destroys a root containing multiple levels of attached children
-- **THEN** each attached widget is destroyed exactly once and child destruction observes no parent reference to the owner initiating that destruction
+- **WHEN** an exclusive owner releases an inactive widget root containing children and components
+- **THEN** scene ownership destroys each owned object/component exactly once with scene parent cleanup and weak-reference invalidation
 
 #### Scenario: Detached subtree outlives parent
-- **WHEN** a subtree is detached and its former parent is destroyed
-- **THEN** the retained subtree remains usable with no parent reference at its root and unchanged internal relationships
+- **WHEN** a subtree is moved away from its former parent to another live scene object and the former parent is destroyed
+- **THEN** the subtree survives under its new parent with its internal relationships intact
 
 #### Scenario: Owned widget is destroyed through its base interface
-- **WHEN** a caller invokes the base object destruction entry point on a widget still held by an owning handle
-- **THEN** the call terminates the process in both Debug and Release instead of freeing the widget and leaving a dangling owner
+- **WHEN** a caller uses the base destruction API on an inactive owned widget with scene services initialized
+- **THEN** the result follows the same ownership and invalidation behavior as an ordinary owned SceneObject instead of invoking a widget-specific abort
+
+#### Scenario: Active widget is removed
+- **WHEN** an active widget is removed from its scene parent
+- **THEN** its references and components follow normal scene destruction/deactivation, including completion of pending component work before final destruction
 
 ### Requirement: Effective visibility follows ancestry
 
-Widgets SHALL expose local visibility independently from effective visibility. Effective visibility SHALL be true exactly when the widget and all its ancestors are locally visible. Ancestor visibility changes SHALL NOT modify descendants' local flags. Reparenting and detachment SHALL be reflected by the next effective-visibility query without a frame update.
+Widgets SHALL retain local visibility independently from effective visibility. Effective visibility SHALL be true exactly when the widget and every widget ancestor in the scene hierarchy are locally visible. Traversal SHALL continue through ordinary scene objects, which contribute no UI visibility flag. Ancestor visibility edits SHALL NOT change descendant flags. Reparenting SHALL be reflected immediately without a frame update. Local UI visibility SHALL be independent of scene activation state.
 
 #### Scenario: Ancestor is hidden then shown
-- **WHEN** a visible subtree's ancestor is hidden and subsequently shown
-- **THEN** effective visibility follows that ancestor while descendant local flags remain unchanged and locally hidden descendants remain effectively hidden
+- **WHEN** a visible subtree's widget ancestor is hidden and subsequently shown, including across ordinary scene ancestors
+- **THEN** effective visibility follows that widget ancestor while descendant local flags remain unchanged and locally hidden descendants remain hidden
 
 #### Scenario: Widget leaves a hidden parent
-- **WHEN** a locally visible widget is detached from a hidden parent
+- **WHEN** a locally visible widget is reparented away from hidden widget ancestry into visible widget ancestry
 - **THEN** it immediately reports effective visibility as true
 
 ### Requirement: Portable independent foundation
 
-The widget foundation SHALL build for supported native Windows and Emscripten targets and support headless native tests without a window, GPU, or application service startup. Its public dependency closure SHALL include the engine scene object support needed by the new object model. Installed SDK consumers SHALL be able to link the library and its dependency closure and use its public API. The foundation SHALL NOT require graphics, input, text rendering, Cocos, Qt, USD, or platform-specific binary dependencies. Standalone kernel builds and existing minimal/scene default module selections SHALL remain independent of this feature; consumers SHALL explicitly opt into UI.
+Widgets SHALL build for supported native Windows and Emscripten targets and support headless tests without a window or GPU. Basic inactive construction and state access SHALL remain usable without scene activation; scene loading, querying, and lifecycle operations SHALL use their normal scene services. SDK consumers SHALL be able to create widgets and save/load scenes using installed interfaces and required portable serialization support. CoreScene and standalone kernel/default minimal/scene selections SHALL remain independent of UI registration and dependencies. The feature SHALL NOT require graphics, input, text rendering, Cocos, Qt, USD, or platform-specific binary dependencies.
 
 #### Scenario: Headless native and browser compilation
-- **WHEN** the foundation and its focused consumers are built for native Windows and Emscripten with the required scene dependency closure
-- **THEN** they compile without rendering or window dependencies and native ownership/state tests execute headlessly
+- **WHEN** focused widget and persistence consumers build for native Windows and Emscripten
+- **THEN** their state and scene-stream checks execute headlessly with the required portable services and without window/rendering startup
 
 #### Scenario: Relocated SDK consumer
-- **WHEN** an installed SDK is relocated and a small consumer creates, attaches, references, and removes widgets
-- **THEN** the consumer builds and runs using the installed public interface and dependencies without source-checkout paths
+- **WHEN** an SDK is relocated and a consumer creates, attaches, references, saves, restores, and removes widgets
+- **THEN** it builds and runs using installed public interfaces and dependencies without source-checkout include or library paths
 
 #### Scenario: Existing minimal configuration
-- **WHEN** standalone kernel or existing minimal/scene defaults are configured
-- **THEN** they acquire no new dependency on the widget foundation or retired UI implementation
+- **WHEN** standalone kernel or existing minimal/scene defaults are configured and ordinary scenes are used
+- **THEN** they acquire no dependency on UI or its registration and ordinary scene behavior remains available
 
 ### Requirement: Invalidating non-owning widget references
 
-Callers SHALL be able to retain engine weak references to widgets without extending their lifetimes. References SHALL remain valid across attachment, detachment, and ownership transfer while the referenced widget lives. All references to a widget SHALL become invalid before its concrete destructor executes. References to retained detached subtrees SHALL remain valid after destruction of their former parent. This contract SHALL apply to in-memory references only and SHALL NOT imply widget serialization, scene-query resolution, or scene attachment support.
+Widgets SHALL use scene-object weak-reference, query, and serialization semantics. References SHALL remain valid across attachment and reparenting while the object remains live, and SHALL invalidate according to scene destruction rules no later than concrete destruction. Widgets SHALL be addressable through the existing scene-object query category. Serialized component references to widgets SHALL resolve to the restored or duplicated scene objects using existing scene reference remapping. Reloading SHALL NOT retarget weak handles belonging to previous live instances.
 
 #### Scenario: Reference follows ownership transfer
-- **WHEN** a referenced widget is detached and attached to another parent
-- **THEN** its weak references still resolve to the same live widget
+- **WHEN** a referenced widget is attached or reparented
+- **THEN** its weak references still resolve to the same live scene object
 
 #### Scenario: Tree destruction invalidates references
-- **WHEN** an owner releases a tree with weak references to its root and descendants
-- **THEN** each widget's weak references become invalid before its destructor executes and remain invalid afterward
+- **WHEN** a widget tree is destroyed through supported scene ownership or lifecycle operations
+- **THEN** its weak references invalidate under scene rules and remain invalid afterward
 
 #### Scenario: Detached references survive former parent
-- **WHEN** a referenced subtree is detached and retained while its former parent is destroyed
-- **THEN** references to the former parent become invalid and references to the retained subtree remain valid
+- **WHEN** a referenced subtree is moved to another parent and its former parent is destroyed
+- **THEN** references to the former parent invalidate while references to the retained subtree remain valid
+
+#### Scenario: Saved component references a widget
+- **WHEN** a scene with a component weak reference targeting a widget is saved and restored or cloned
+- **THEN** that reference resolves to the corresponding restored or cloned widget through the existing object query category
 
 ### Requirement: Parent-relative widget spatial state
 
-Each widget SHALL expose a local three-dimensional translation, quaternion rotation, and scale using the engine transform type. Translation SHALL locate the widget's pivot relative to its parent's pivot. The local mapping SHALL apply scale, then rotation, then translation. Fresh widgets SHALL have identity local transforms. Attachment, detachment, and rejected hierarchy operations SHALL preserve local spatial state, size, and pivot, as well as existing identity guarantees.
+Widgets SHALL use inherited scene local/world transform APIs and existing scene composition, caching, setters, and reparenting behavior unchanged. The widget origin SHALL remain its pivot; child translation SHALL be relative to the parent's scene origin, which is its pivot for a widget parent. Ordinary scene ancestors SHALL contribute their scene transforms. New widget local transforms SHALL be identity. Attachment SHALL preserve local transform; reparenting SHALL preserve world placement by default and preserve local transform when the scene option requests it. Size and pivot SHALL be preserved by hierarchy operations.
 
 #### Scenario: New widget and local transform edit
-- **WHEN** a widget is created and subsequently assigned a valid local transform
-- **THEN** its initial transform is identity and the assigned transform becomes observable without a frame update or scene startup
+- **WHEN** a new widget is assigned a transform through scene APIs
+- **THEN** it starts with identity and exposes the assigned transform and resulting scene world transform using ordinary scene behavior
 
 #### Scenario: Subtree changes parent
-- **WHEN** a subtree is detached and attached to another parent
-- **THEN** every widget retains its local transform, size, and pivot while the subtree's accumulated placement follows the new ancestry
+- **WHEN** a widget subtree is reparented using the default scene option or the local-preservation option
+- **THEN** the result matches an equivalent ordinary SceneObject subtree under the same option, retaining widget size and pivot
+
+#### Scenario: Rotation and nonuniform scale compose
+- **WHEN** widget ancestors combine rotation and nonuniform scale
+- **THEN** local and world results match the current scene transform system without a separate exact-matrix or shear-preservation guarantee
 
 ### Requirement: Widget rectangle size and pivot
 
@@ -134,26 +122,50 @@ Each widget SHALL expose an unscaled width and height and a dimensionless two-co
 - **WHEN** a parent with attached children changes its size and sets pivot to (2, -1)
 - **THEN** its rectangle uses that external pivot without clamping and all child origins retain their accumulated positions
 
-### Requirement: Immediate accumulated widget matrix
-
-Widgets SHALL expose a matrix mapping their pivot-relative local coordinates into the coordinate space outside the top-level widget. A parentless widget's matrix SHALL equal its local transform matrix. An attached widget's matrix SHALL equal its parent's accumulated matrix multiplied by its own local matrix. Queries SHALL reflect ancestor edits and hierarchy changes immediately and preserve the full affine composition, including shear from rotation combined with nonuniform scale. Size and pivot offsets SHALL NOT enter this hierarchy composition. This coordinate space SHALL NOT imply scene attachment, screen pixels, projection, or a layout system.
-
-#### Scenario: Rotated child under scaled ancestry
-- **WHEN** a child has a nontrivial rotation beneath an ancestor with nonuniform scale
-- **THEN** its accumulated matrix matches the ordered product of local matrices, including resulting shear, without decomposing the result into translation, rotation, and scale
-
-#### Scenario: Ancestor edits and detached root
-- **WHEN** an ancestor transform changes and the subtree is later detached
-- **THEN** the next query reflects the ancestor edit before detachment and the detached root's own local matrix afterward
-
 ### Requirement: Validated widget spatial updates
 
-Spatial setters SHALL report failure and preserve prior state for non-finite components, negative size components, or a quaternion that fails the engine transform's normalized-rotation validity check. Valid finite zero or negative scale SHALL be accepted; zero size SHALL be accepted. Updates SHALL NOT silently clamp or normalize submitted state. Getters SHALL NOT permit mutation that bypasses validation. These behaviors SHALL hold in Debug, Release, and supported browser builds using the existing portable dependency closure.
+Widget size/pivot setters SHALL reject non-finite components and negative size, reporting failure and preserving previous geometry. Zero size and finite external pivots SHALL be accepted without clamping. Geometry getters SHALL NOT permit bypassing validation. Transform mutation and validation SHALL follow the existing scene API, replacing the previous widget-specific Result-based transform validation. These behaviors SHALL hold in Debug, Release, and supported browser builds.
 
 #### Scenario: Rejected spatial edit
-- **WHEN** a setter receives NaN, infinity, a negative size, or an invalid quaternion
-- **THEN** it reports failure and leaves all widget state and hierarchy relationships unchanged
+- **WHEN** a size/pivot setter receives NaN, infinity, or a negative size
+- **THEN** it reports failure and leaves prior widget state and hierarchy unchanged
 
 #### Scenario: Degenerate and reflected geometry
-- **WHEN** a widget receives zero size or a valid transform containing zero or negative scale
-- **THEN** the edit succeeds and forward matrix queries remain available without requiring an inverse
+- **WHEN** zero size is assigned or scene transform APIs are used with zero or negative scale
+- **THEN** zero size succeeds and transform results follow the same behavior and limitations as an ordinary SceneObject
+
+### Requirement: Widget scene and prefab persistence
+
+Saving and restoring through existing scene/prefab containers with UI types registered SHALL reconstruct NauWidget runtime types, object/component identities according to the selected scene UID policy, names, local visibility, size, pivot, local scene transforms, attached components, and ordered mixed child hierarchies. Effective state SHALL be recomputed. Ordinary scene restoration SHALL preserve saved UIDs; scene duplication and prefab instantiation SHALL use existing UID regeneration and reference remapping. Widgets SHALL be supported beneath the ordinary scene root and as prefab roots.
+
+#### Scenario: Scene stream round trip
+- **WHEN** a scene containing widgets, ordinary objects, non-default widget state, and attached components is written to a stream and restored
+- **THEN** widget types, saved properties, identities, component data, and child order match the source under the selected UID policy
+
+#### Scenario: Widget prefab is instantiated twice
+- **WHEN** a prefab rooted at a widget is instantiated twice
+- **THEN** both roots and widget descendants have the correct runtime types and state, each instance has fresh identities, and internal references target its own instance
+
+### Requirement: Compatible widget construction and property restoration
+
+Scene construction SHALL support widget runtime restoration without introducing a dependency from the scene module to UI. Ordinary assets SHALL retain their existing construction behavior. Without UI registration, widget root-component records SHALL use the existing missing-component representation, retaining data through re-save for later restoration with UI present. Missing widget properties SHALL use defaults. Invalid serialized widget geometry or property types SHALL report restoration failure, preserve prior widget-specific state as a group, and use the existing scene loader diagnostic/continuation policy. Scene transform deserialization SHALL retain its existing behavior.
+
+#### Scenario: Ordinary scene loads without UI
+- **WHEN** an existing ordinary scene asset is loaded with no UI registration
+- **THEN** objects and components restore as before without requiring UI
+
+#### Scenario: Widget type is temporarily unavailable
+- **WHEN** widget records are loaded and re-saved without UI registered and subsequently loaded with UI registered
+- **THEN** the intermediate object uses missing-component data and the final load recovers the widget runtime type and saved properties
+
+#### Scenario: Serialized geometry is invalid
+- **WHEN** widget-state restoration receives an invalid size, pivot, or property type
+- **THEN** the widget state group remains at its prior values, a restoration diagnostic is produced, and scene loading follows its existing continuation policy
+
+#### Scenario: Explicit null widget state is invalid
+- **WHEN** a scene component record contains an explicit null widgetState
+- **THEN** the UI-neutral component validation hook rejects it before generic property assignment, retains widget defaults, and reports a restoration diagnostic while normal UID and transform restoration continue
+
+#### Scenario: Widget properties are omitted
+- **WHEN** a widget record omits its widget state or individual optional widget fields
+- **THEN** omitted values restore as visible, zero size, and centered pivot as applicable
