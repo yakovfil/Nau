@@ -1,0 +1,34 @@
+[
+    {
+        "path":  "NauEngineModules/modules/ui/CMakeLists.txt",
+        "sha256":  "9820abc28c3ca156a3c9f6abd8a1412db807c1cf07ae527667313253a8ee6654"
+    },
+    {
+        "path":  "NauEngineModules/modules/ui/README.md",
+        "sha256":  "da3d2fa24de93f927714c1fb64d009f5eef7778b001a00ff27d518e4d048a9f3"
+    },
+    {
+        "path":  "NauEngineModules/modules/ui/include/nau/ui/widget.h",
+        "sha256":  "aac1cab185af5ea4692197e192d384258eb130ad7a04bf0efc78b5759318bcaf"
+    },
+    {
+        "path":  "NauEngineModules/modules/ui/src/widget.cpp",
+        "sha256":  "9b9e6b8517922ee7246826d1c161f4a395556487a9c79547bce3533adbb50658"
+    },
+    {
+        "path":  "NauEngineModules/modules/ui/tests/test_widget.cpp",
+        "sha256":  "0e3f19badca54918447354ae85ed53a682ed16bd5e1c11c006ff2b60e4f66618"
+    },
+    {
+        "path":  "NauEngineModules/modules/ui/tests/consumer/CMakeLists.txt",
+        "sha256":  "32cab6133e44a2a181cee4b6dee8a4607a1f6c90be462319c04086b84bf85168"
+    },
+    {
+        "path":  "NauEngineModules/modules/ui/tests/consumer/main.cpp",
+        "sha256":  "c17966565c563c98e35446e289ae97270eda6d55b16b7f41da1e444846f72679"
+    },
+    {
+        "path":  "NauEngineModules/cmake/for_build/CMakeLists.txt",
+        "sha256":  "6e4e0e15a5400089bf2161cbf1417eb9faa2c203624d867291e1a8bc3ca669b7"
+    }
+]
