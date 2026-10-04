@@ -487,3 +487,9 @@ ctest --test-dir build/clang-vs2026-dll/engine/core/kernel/tests/test_runtime --
 ```
 
 The exclusions record the observed `WhenAll_NoTimeout` illegal-instruction failure and, only on the DLL route, three legacy allocator failures whose test names remain in the historical failure ledger. These are deferred tests, not compiler or runtime fixes; see [failed-tests.md](failed-tests.md). Dependency preparation preserves backups and rejects unrecognized headers. It does not change the USD/Qt/TBB binaries or disable compiler diagnostics. For clang-cl, the platform flags retain `/clang:-Wno-option-ignored` for the bundled Google Test headers and omit `/JMC`, which clang-cl reports as an ignored option when no debug information is requested; this does not weaken MSVC warning settings.
+
+## Retired Cocos UI
+
+The Cocos2d-backed `ui` module and its widget API, UiSampleApp, GUI editor, UI synchronization, and USD UI translation have been retired. Existing UI assets are unsupported; retained tools report this without converting or deleting them. Rebuild engine, modules, editor, samples, and installed SDK consumers together in fresh output directories. Old UI DLLs, headers, and SDK exports are incompatible.
+
+Asset-backed single-line text remains available through `NauScreenText`; see `NauDemo/doc/screen_text.md`. ImGui diagnostic interfaces and the editor's Qt interface remain available.
