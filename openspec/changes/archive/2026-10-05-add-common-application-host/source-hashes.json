@@ -1,0 +1,46 @@
+{
+  "repositories": {
+    "NauEngineLite": "c4952d9f2ee2836ccd9941e82be743c6191aa987",
+    "NauEngineModules": "a1eae7d32f6fd58c3a094c02d143e114a3a1284a",
+    "NauDemo": "cfb3f530d829afda271ea698539953ade6223960",
+    "root": "4916a1324068aeb5138eb12ea453fa3062e696cc"
+  },
+  "files": {
+    "NauEngineLite/doc/common_application_host.md": "be518df19d46502e6303b3de77df12d15c3d677a4b23a1c524ed083376d24d69",
+    "NauEngineLite/engine/core/app_framework/include/nau/app/application_delegate.h": "6f1669df54130303dab9fcbfb5f8b6f9b3571b4b049bb278e470b80cd8da952e",
+    "NauEngineLite/engine/core/app_framework/include/nau/app/run_application.h": "5336297080d5c4652de99dfd3373db0358c8aac8e17af052e477eed7ef927f96",
+    "NauEngineLite/engine/core/app_framework/src/CMakeLists.txt": "3db71da0a353252af9b4478dea1846348710710e6617e735b59c2da61816a2b6",
+    "NauEngineLite/engine/core/app_framework/src/app/application_delegate.cpp": "958077cc3b3114b0bf1bff660dbb60ae7e649c9766d4d8324f82d9507a08bcb6",
+    "NauEngineLite/engine/core/app_framework/src/app/application_host.h": "33d1ac1b03e135c18eb4c9c3a5ea5da4a4381fd241d0a91a545103ec82a1b58e",
+    "NauEngineLite/engine/core/app_framework/src/app/application_impl.cpp": "b6b44e6be46612ec15f4c25b87b158ea83d52cc38d073433b163c60f00490d04",
+    "NauEngineLite/engine/core/app_framework/src/app/application_impl.h": "6f9ed559be4fe8b03e2e8acb4d5b9ceb009182f15219fd899a2c7d668ff67fcb",
+    "NauEngineLite/engine/core/app_framework/src/app/run_application.cpp": "c150073a497d8b83c41cf100cf92e3f65bf79a02feecdb24d82e2dd35c71818f",
+    "NauEngineLite/engine/core/app_framework/src/platform/emscripten/browser_runtime.cpp": "0509a327ee6f99a8f479cf127de056e905d060d71a066c5a25b7eaa313de1392",
+    "NauEngineLite/engine/core/app_framework/tests/common_host/consumer.cpp": "2332107d52f1c352fefa92f12d1121cfc1daa5b612b1b22dbdb6dc47d89a53a8",
+    "NauEngineModules/cmake/probes/common_host/CMakeLists.txt": "0d963f58ff0c6670333877696e01029e47f3d34529345b5212a03db04e2eeb3a",
+    "NauEngineModules/cmake/probes/common_host/README.md": "3f1647a3e93ae30efaeb6b283eed8f36b14d59bd1201051ba2c66777902b17b4",
+    "NauEngineModules/cmake/probes/common_host/fixture.html": "6eac75184518347783ef945874a7ea7af6a1684fedea382061984e156fbb2ccf",
+    "NauEngineModules/cmake/probes/common_host/run.py": "0cdfbd09c2d1a70b065d87d9ca00a7d68e726680d432c259f8f09fdeeb47ae42",
+    "NauEngineModules/cmake/probes/common_host_scene/CMakeLists.txt": "1f6df0ba992560a87ea49c859ab44b511b3b73da7f873c3ac8605b32b8075920",
+    "NauEngineModules/cmake/probes/common_host_scene/runtime.cmake": "648068c28b7600c2f6d06f7af0267920637622bcb4d91732d7073a17765bb5f6",
+    "NauEngineModules/modules/graphics/src/graphics_impl.cpp": "b0125c818237bf93fc68724f3cdbb2ec6abf252e01d0665ceafad35b88368843",
+    "NauEngineModules/modules/scene/tests/test_scene/test_application_host.cpp": "aeaac51b60da10c671eb2764992e4152e7c25bdabc9c3c339135584f1c1ea433",
+    "NauDemo/CMakeLists.txt": "5aef814a950b60b283cfa39d23445694015e7b85c6722e61b20994735946143d",
+    "NauDemo/README.md": "b3fe86f35a417e531bcf95877085f34f784850734c66e072feafbf9aa434d850",
+    "NauDemo/src/demo_application.cpp": "1d8dc187bf48873f73de741dfa743eae6c387beb978a92f9b634b53614159a5b",
+    "NauDemo/src/demo_application.h": "4ab63a5b4205cd6e218333ccc4969843ccbc5bb21ac1aea905c74027c7ab4b03",
+    "NauDemo/src/demo_platform.h": "40e23cd43987ac889402db3890998d79a20bff55c6549feaf189bbaf338a1c73",
+    "NauDemo/src/main.cpp": "dca9ddf00629a526c43137b89be5246e40c1c51440dc094f6ef6d5747c764240",
+    "NauDemo/src/platform/native.cpp": "edd3de3c33a244ec6b1b797afb75da5afd516ded8bd6cd920d9ecadc65983608",
+    "NauDemo/src/platform/web.cpp": "3afa2cda294a7b0e91808adad576462c4d5d666932c5a88a3403c15996c7638b",
+    "NauDemo/tests/test_application_host_native.py": "223fac7276c71d7f2950c1bb1610d433f1668ecfe31159871e4b520d14945874",
+    "NauDemo/web/test_package.py": "d5bc1496c58fc2ac7032d5e873fcad6a9be74bfa46299a40a8256b9106bec8b8"
+  },
+  "removed": [
+    "NauDemo/src/web_main.cpp"
+  ],
+  "preExistingDirty": [
+    "NauEngineLite/engine/3rdparty_libs/googletest",
+    "NauSamples/uiSampleApp/"
+  ]
+}
