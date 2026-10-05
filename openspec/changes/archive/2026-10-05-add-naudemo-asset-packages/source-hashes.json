@@ -1,0 +1,210 @@
+{
+  "recordedAt": "2026-10-05T20:29:42.183505+00:00",
+  "baselineRevisions": {
+    "NauEngineLite": "37b9a839ffb2e3b22be3e5c7a5cd835caceb23ab",
+    "NauEngineModules": "f7935a9ae5068e98a4dd3f16ec77e4c1220b7252",
+    "NauDemo": "daf85176ff5f3207674c0a4866b078243d0f5d27"
+  },
+  "files": [
+    {
+      "path": "NauEngineLite/cmake/NauMinimalKernelSources.cmake",
+      "sha256": "6b5732c4dc9c141343c9c25c6575376b67055563756e4b7fcb7bfc61f0a985c1"
+    },
+    {
+      "path": "NauEngineLite/doc/asset_packages.md",
+      "sha256": "9b0a13e23b646a49bbeeb8dca7749c98c51f02a9e4b54b3fa77a1e4a138f1e40"
+    },
+    {
+      "path": "NauEngineLite/engine/core/app_framework/tests/common_host/test_file_logging.cpp",
+      "sha256": "d3ba9f27fd7bc328866c9c3d3746e0d1c879252ee8b6f4ee4f3ebf665763ced1"
+    },
+    {
+      "path": "NauEngineLite/engine/core/kernel/include/nau/io/asset_pack_file_system.h",
+      "sha256": "1c430b1ca8d5f1a9ad804a42dd494b8415d74e2569d154ddd5f2cb46d09d3fde"
+    },
+    {
+      "path": "NauEngineLite/engine/core/kernel/src/diag/log_subscribers.cpp",
+      "sha256": "42d6fed93180065c1d3f94e77eee18f79d0d2de5cbad652a6d2cfb62c0e9f209"
+    },
+    {
+      "path": "NauEngineLite/engine/core/kernel/src/io/asset_pack_file_system.cpp",
+      "sha256": "370a90af45138655ebe35b2a690a9dbfe8b7899c533159af1a2c10d1d947bc2d"
+    },
+    {
+      "path": "NauEngineLite/engine/core/kernel/tests/test_kernel/CMakeLists.txt",
+      "sha256": "509d497fadb4e8185e6c9c4ac161e58e2c6d5037d08ac0f1fa84ba6a80e94743"
+    },
+    {
+      "path": "NauEngineLite/engine/core/kernel/tests/test_kernel/test_io/fixtures/README.md",
+      "sha256": "a473f1eee25755a76525a1d07e267efd4b3b01a1175c6a927e6ad1b5cfba7cc2"
+    },
+    {
+      "path": "NauEngineLite/engine/core/kernel/tests/test_kernel/test_io/fixtures/legacy.nau_pack",
+      "sha256": "1be8756be4d7c695eaa2d88e7bd64b51357f82bcb8989702f8800c0ce69fd068"
+    },
+    {
+      "path": "NauEngineLite/engine/core/kernel/tests/test_kernel/test_io/fixtures/legacy_payload.txt",
+      "sha256": "8b10f4138bb97522cae797cd6c861e51d560ac0cb48ec2eb3fd8dbfd6a77c4f4"
+    },
+    {
+      "path": "NauEngineLite/engine/core/kernel/tests/test_kernel/test_io/test_asset_pack.cpp",
+      "sha256": "4002829db8d3929305c41d9305cd762c798d6e5093ece3841f67a5d67133a339"
+    },
+    {
+      "path": "NauEngineLite/engine/core/kernel/tests/test_kernel/test_io/test_asset_pack_legacy.cpp",
+      "sha256": "79249cc076cd77c63843065ca0fe5dcea05dfb58b923209edc612318119fab16"
+    },
+    {
+      "path": "NauEngineModules/cmake/probes/asset_pack/CMakeLists.txt",
+      "sha256": "f1c2f733f3af6ae96246a7a9502c6a10b04c9c5c8b57f7a488e765c7efbcd4a6"
+    },
+    {
+      "path": "NauEngineModules/cmake/probes/asset_pack/run_browser.py",
+      "sha256": "fe14d2b184ebdf9135e4cdc5926aa47d96b560eb2cfd49839678c8d9b68f499b"
+    },
+    {
+      "path": "NauEngineModules/cmake/probes/common_host/CMakeLists.txt",
+      "sha256": "202fe018834be3cfc6cd822e2f9bd88e427db7c2e084c5d714708119cc6e9abe"
+    },
+    {
+      "path": "NauEngineModules/modules/graphics/src/graphics_impl.cpp",
+      "sha256": "fd992633a86fa5f40eb55e1eb7880d2592fc619abc4535fa91043158953a6c52"
+    },
+    {
+      "path": "NauEngineModules/modules/graphics/src/graphics_impl.h",
+      "sha256": "1932d47ca33c0b7fb946009ac3d25d4037d358cd8fa918b5be39da8f7511824c"
+    },
+    {
+      "path": "NauEngineModules/modules/graphics/src/imgui/imguiRenderer.cpp",
+      "sha256": "11ee04481934cdfac38c952b5ed8a0a48bc89fbd6588b0e126968b3108be652c"
+    },
+    {
+      "path": "NauEngineModules/modules/graphics/src/imgui/imguiRenderer.h",
+      "sha256": "515d2b401026acd6a838fc6afc815594a42e2ae0a183b2ea95faf665eb354ad2"
+    },
+    {
+      "path": "NauEngineModules/modules/graphics/src/render/environmentRenderer.cpp",
+      "sha256": "0bbeb4a512865cbcd29163d05f959db5cee1bb7fc2cbc8dea7fc84ad8ebfe27b"
+    },
+    {
+      "path": "NauEngineModules/modules/graphics_assets/include/graphics_assets/static_meshes/static_mesh.h",
+      "sha256": "dd849073e30e24bda2750b2aae7c6c97543fbf46f50b0cbc452319ff01b25317"
+    },
+    {
+      "path": "NauEngineModules/modules/graphics_assets/include/graphics_assets/texture_asset.h",
+      "sha256": "06e05fcac5399cab37bbf86c6a8cebbe971c73a4ed705a6909e63b873985927c"
+    },
+    {
+      "path": "NauEngineModules/modules/graphics_assets/src/assets/static_meshes/static_mesh.cpp",
+      "sha256": "3c9e9bfb16a0b064be861f06471c8afad5315af40b4e406d4a232e1c2b89ae1b"
+    },
+    {
+      "path": "NauEngineModules/modules/graphics_assets/src/assets/texture_asset.cpp",
+      "sha256": "0a4109450b2cd8ac23f4a1cfced99737a3d9e92016a272151b323596e57e91f9"
+    },
+    {
+      "path": "NauEngineModules/tools/asset_pack_tool/CMakeLists.txt",
+      "sha256": "b4687357d30f5fc2fc00e801b30c23cfd1d5fdd6263164fce1873dbed110f1b9"
+    },
+    {
+      "path": "NauEngineModules/tools/asset_pack_tool/README.md",
+      "sha256": "d49cd43693828856f735fe76ef80df35c13434272585b2f4bcf791e493486b65"
+    },
+    {
+      "path": "NauEngineModules/tools/asset_pack_tool/cmd/main.cpp",
+      "sha256": "892195753fe70b67ed4704d279f5fa09d90b6c242362086d1649b0a1d965b62e"
+    },
+    {
+      "path": "NauEngineModules/tools/asset_pack_tool/src/asset_pack_builder.cpp",
+      "sha256": "e6679d55e6c96a62a636b2ab0fe926aaa3af0db9ab89434703af258881dd85cd"
+    },
+    {
+      "path": "NauEngineModules/tools/asset_pack_tool/tests/test_asset_pack_builder.cpp",
+      "sha256": "1b6be738bf477796331b521059b2c1ec037b186468505c84b38a782e9891a5b6"
+    },
+    {
+      "path": "NauEngineModules/tools/asset_pack_tool/tests/test_cli.py",
+      "sha256": "c126def55b35976b0cb900269218b7529c86209d5f8bf7169b9ec1694a833b9c"
+    },
+    {
+      "path": "NauDemo/CMakeLists.txt",
+      "sha256": "b532268a2d21de0455b718d85cd2d400db1978825f89776c1494384f0951a88d"
+    },
+    {
+      "path": "NauDemo/README.md",
+      "sha256": "353162801df70f56a39651e1c9e9d96d14b75a382180a0571f2ac66d1bbacbd4"
+    },
+    {
+      "path": "NauDemo/cmake/asset_packages.cmake",
+      "sha256": "ca576e2c761496b8bfa54d6d975e3e4f51047656699aec82a5395a1a6c80d994"
+    },
+    {
+      "path": "NauDemo/cmake/build_asset_packer.ps1",
+      "sha256": "00f6f132b78137decc2d87b6ade95e0f1a7065a193a118af30ffa5e4e3ae91b0"
+    },
+    {
+      "path": "NauDemo/cmake/native_assets.json.in",
+      "sha256": "f269de83d1b64464bd9784e66a6bb298bf7887506d42b634f8f56e1985a66484"
+    },
+    {
+      "path": "NauDemo/cmake/web_assets.json.in",
+      "sha256": "00512d4bc1653a01015060a4250782ecf35a7293416822c3b29cf967d5b86fdc"
+    },
+    {
+      "path": "NauDemo/config/app.json",
+      "sha256": "6b5af735089c89b50d58c1c38e088cf56364e1bf03453c518ce9624f1e1290ec"
+    },
+    {
+      "path": "NauDemo/doc/naudemo_web.md",
+      "sha256": "ec4d54ddf4e8608207c65c5a126710fcba6607d5756021ebdbcd5531b25d2c11"
+    },
+    {
+      "path": "NauDemo/src/platform/native.cpp",
+      "sha256": "224fca50217aec1ad98aea082fdd6a3277bf1aa43323d59997afa0e354ac6f8a"
+    },
+    {
+      "path": "NauDemo/src/platform/web.cpp",
+      "sha256": "572ec8844452fa70edeeb9aef1da787a17411f284b6bc84c8bcd1ac1859d07b5"
+    },
+    {
+      "path": "NauDemo/tests/audit_package_dependencies.py",
+      "sha256": "4e49bb3424ac56e0b6800dea6eca9473fa303f9d76db6e39b701202886dfff75"
+    },
+    {
+      "path": "NauDemo/tests/prepare_fresh_checkout.py",
+      "sha256": "93353a4014bb6b3bfccec941edb8fafd5f099ec04c8514fc8d153154a1383a39"
+    },
+    {
+      "path": "NauDemo/tests/test_application_host_native.py",
+      "sha256": "702025b13075baad2f01c86d0665c97647c79161735e2332b99aebbc4c5aad74"
+    },
+    {
+      "path": "NauDemo/tests/test_asset_package_failures.py",
+      "sha256": "49ca6890b7673b09b18ea209b57cc8442f75d786345e8b0f056ae98cf1a9ce62"
+    },
+    {
+      "path": "NauDemo/tests/test_package_build.py",
+      "sha256": "5ddf4d938ee4ac648c665a25323202ec3a8e9ecc3e3f8e3b3a6825bca55f5ebc"
+    },
+    {
+      "path": "NauDemo/tests/test_source_independence.py",
+      "sha256": "01f9a5aa04a2757d967c96efc7b7d0e2b3e7e6052a79a819837ade4972dd4729"
+    },
+    {
+      "path": "NauDemo/web/README.md",
+      "sha256": "ad8f34abd9eecd301cb9f452cf9171fd0bde4926225e349a2e3cc34cdd95da80"
+    },
+    {
+      "path": "NauDemo/web/build.ps1",
+      "sha256": "4c42c033c162f14e0f22f49f9a16955a6dc38bbb141925ba464d70ccae87c0ea"
+    },
+    {
+      "path": "NauDemo/web/stage.cmake",
+      "sha256": "fd2a73ee99c5314addcdcec1fe5502dd3c77bcca1c74f9ac778e97f187967ba8"
+    },
+    {
+      "path": "NauDemo/web/test_package.py",
+      "sha256": "7758f08d305577baa539b6a4a23612d082efd76e972f918263b6c1a05136dbe4"
+    }
+  ]
+}
