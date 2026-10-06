@@ -76,7 +76,7 @@ Both projects have `vcpkg.json` manifests with a pinned baseline and dependencie
 Start in the directory containing this file. Keep this PowerShell session open; later examples reuse `$nauRepo`.
 
 ```powershell
-$nauRepo = (Get-Location).Path
+$nauRepo = (Get-Location).Path.Replace('\', '/')
 git submodule update --init --recursive
 git submodule status --recursive
 $env:NAU_ENGINE_SOURCE_DIR = Join-Path $nauRepo 'NauEngineLite'
@@ -88,6 +88,8 @@ The expected layout is:
 Nau/
   build.md
   NauEngineLite/
+  NauEngineModules/
+  NauSamples/
   NauEditorPublic/
   NauDocsPublic/
 ```
@@ -159,7 +161,7 @@ The checked-in [installation documentation](NauDocsPublic/source/beta/user-doc/i
 Set the actual path for your machine:
 
 ```powershell
-$nauQt = 'C:/Tools/Qt-6.4.1_2/msvc2019_64'
+$nauQt = 'C:/path/to/Qt/6.4.1/msvc2019_64' # Replace with your Qt SDK location.
 Test-Path "$nauQt/lib/cmake/Qt6/Qt6Config.cmake"
 Test-Path "$nauQt/bin/windeployqt.exe"
 ```
@@ -174,65 +176,97 @@ py -3.10 "$nauRepo/NauEditorPublic/scripts/prepare_qt_for_msvc.py" "$nauQt"
 
 This reproducible upstream backport removes references to retired STL iterator helpers. It preserves the Qt binaries and backs up the original header; see the [preparation instructions](NauEditorPublic/scripts/README.md).
 
-### Configure against the engine sources
+### Build the local OpenUSD SDK
+
+The validated Release route builds OpenUSD 24.08 and Adobe's required
+`usdGltf_plugin` from the pinned engine submodules. With the prerequisites and
+submodules above initialized:
+
+```powershell
+py -3.10 -m pip install Jinja2==3.1.6
+& "$nauRepo/NauEngineLite/cmake/build_openusd.ps1" -Jobs 8
+$nauUsdSdk = "$nauRepo/NauEngineLite/engine/3rdparty_libs/build/openusd/install"
+```
+
+The helper also builds the glTF plugin's dependencies as static libraries with
+the dynamic CRT, avoiding conflicts with the engine's `fmt.dll`. If the core
+SDK is already built, add the plugin with
+`& "$nauRepo/NauEngineLite/cmake/build_usd_gltf.ps1" -Jobs 8`.
+Source URLs, pinned revisions and output paths are in the
+[local SDK guide](NauEngineLite/doc/openusd.md).
+
+### Configure against the engine and modules sources
 
 ```powershell
 Set-Location (Join-Path $nauRepo 'NauEditorPublic')
-cmake --list-presets
-cmake --preset win_vs2026_x64_dll -A x64 "-DNAU_ROOT_DIR=$env:NAU_ENGINE_SOURCE_DIR" "-DCMAKE_PREFIX_PATH=$nauQt"
+cmake --preset win_vs2026_x64_dll -B build/latest-release `
+  "-DNAU_ROOT_DIR=$nauRepo/NauEngineLite" `
+  "-DNAU_MODULES_SOURCE_DIR=$nauRepo/NauEngineModules" `
+  "-DNAU_SAMPLES_SOURCE_DIR=$nauRepo/NauSamples" `
+  "-DCMAKE_PROJECT_NauEngine_INCLUDE=$nauRepo/NauEngineModules/cmake/attach_modules.cmake" `
+  "-DNAU_EXTERNAL_PROJECT_DIRS=$nauRepo/NauEngineModules;$nauRepo/NauSamples" `
+  "-DNAU_USD_SDK_DIR=$nauUsdSdk" `
+  "-DCMAKE_PREFIX_PATH=$nauQt"
 ```
 
-Use the DLL preset for the editor: its linked USD plugin targets are enabled by `BUILD_SHARED_LIBS`. `NAU_ROOT_DIR` must point to `NauEngineLite/`, not its `build/` or `output/` directory.
+Use the DLL preset: the editor's USD plugin targets require `BUILD_SHARED_LIBS`.
+`NAU_ROOT_DIR` points to the engine sources, not its build or installed SDK.
+The editor compiles the engine, modules and required sample resources within its
+own build tree; a standalone engine build is not required.
 
-The editor adds the engine with `add_subdirectory`, compiling it inside the editor's build tree. It does not reuse the standalone engine binaries. Building the standalone engine first is useful for checking the toolchain but is not a prerequisite of this configure command.
+`NAU_USD_SDK_DIR` selects the locally built SDK layout. Omitting it retains the
+legacy downloaded archive route. `pxr_DIR` alone does not select the local SDK.
+The helper produces a Release SDK; Debug requires a matching SDK and separate
+validation. Do not build Debug against these Release-only dependencies.
 
-Unlike the older installation example, the current USD helper fetches OpenUSD automatically and sets `pxr_DIR` itself. Do not rely on `-Dpxr_DIR=...` alone to select another distribution. For an existing copy of the exact project archive, CMake's FetchContent override is available by adding `"-DFETCHCONTENT_SOURCE_DIR_USD=C:/Tools/openUSD_24.08_noHydra"`; point it at the extracted package root containing `pxrConfig.cmake`.
+### Compile, verify and launch
 
-### Compile and launch
-
-Build the editor target for local development:
+Close running instances from the output directory before building, since they
+lock runtime DLLs during deployment.
 
 ```powershell
-cmake --build build/win_vs2026_x64_dll --config Debug --target NauEditor
+cmake --build build/latest-release --config Release --target NauEditor --parallel 8
+$nauEditorDir = (Resolve-Path build/latest-release/Release/NauEditor).Path
+py -3.10 "$nauRepo/NauEngineLite/cmake/usd_gltf/check_plugin.py" $nauUsdSdk --deployment $nauEditorDir
+Start-Process -FilePath "$nauEditorDir/NauEditor.exe" -WorkingDirectory $nauEditorDir
 ```
 
-This includes its declared engine, plugin, sample, and translation dependencies. Post-build commands deploy Qt libraries, engine/USD DLLs, plugins, and project templates into the editor output directory.
+The plugin check must report successful `.gltf` and `.glb` triangle imports.
+The build deploys Qt, engine/USD libraries, plugins and project templates beside
+the executable. Keep that complete folder together. `--target NauEditor` avoids
+requesting installer packaging.
 
-```powershell
-Push-Location build/win_vs2026_x64_dll/Debug/NauEditor
-& ./NauEditor.exe
-Pop-Location
-```
-
-Alternatively, open `build/win_vs2026_x64_dll/NauEditor.sln` and launch the `NauEditor` startup project. Its debugger settings configure additional USD/plugin paths. Keep the deployed files beside the executable.
-
-For Release, repeat the build with `--config Release`; the executable will be under `build/win_vs2026_x64_dll/Release/NauEditor/`.
+The Release build, both deployed import checks, loading all nine required USD
+plugins and startup to the responsive project browser passed on 2026-10-06.
+Full project editing, editor test suites and installer packaging were not part
+of that validation. See the [editor README](NauEditorPublic/README.md#release-with-the-locally-built-openusd-sdk)
+for the complete standalone command sequence and missing-plugin/DLL troubleshooting.
 
 ### Build and run editor tests
 
 ```powershell
-$nauEditorBuild = (Resolve-Path build/win_vs2026_x64_dll).Path
-$env:PATH = "$nauQt/bin;$nauEditorBuild/bin/Debug;$env:PATH"
-cmake --build build/win_vs2026_x64_dll --config Debug --target NauEditorUnitTests NauEditorUiTests
-& ./build/win_vs2026_x64_dll/Debug/NauEditorUnitTests/NauEditorUnitTests.exe
-& ./build/win_vs2026_x64_dll/Debug/NauEditorUiTests/NauEditorUiTests.exe
+$nauEditorBuild = (Resolve-Path build/latest-release).Path
+$env:PATH = "$nauQt/bin;$nauEditorBuild/bin/Release;$env:PATH"
+cmake --build build/latest-release --config Release --target NauEditorUnitTests NauEditorUiTests
+& ./build/latest-release/Release/NauEditorUnitTests/NauEditorUnitTests.exe
+& ./build/latest-release/Release/NauEditorUiTests/NauEditorUiTests.exe
 ```
 
 Unit tests use Google Test discovery. The Qt UI test executable is not registered with CTest in its current CMake file, so run it separately in an interactive desktop session. Run standalone engine tests from the engine build tree, since the editor disables those suites.
 
 The commands run the configuration's unit binary directly and should report 64 tests. An exit code of zero with zero tests is not acceptance. The four deferred Release death tests are listed in `scripts/failed-tests-release.txt` and the root `failed-tests.md`; to apply only those exclusions, pass `"--gtest_filter=-$((Get-Content scripts/failed-tests-release.txt) -join ':')"` to the Release unit binary.
 
-Set PATH before building because discovery runs the test executable during the build. For Release, replace both the configuration and the `bin/Debug` PATH entry with Release.
+Set PATH before building because discovery runs the test executable during the build. For a separately provisioned Debug build, change the build directory, configuration and runtime PATH together.
 
 ### Optional installer packaging
 
-A default editor build, including `ALL_BUILD` or the `VS Debug Dll` build preset, also runs the `Installer` target. To request packaging explicitly:
+A default editor build, including `ALL_BUILD`, also runs the `Installer` target. This packaging route was not validated with the local Release SDK. To request packaging explicitly:
 
 ```powershell
-cmake --build build/win_vs2026_x64_dll --config Debug --target Installer
+cmake --build build/latest-release --config Release --target Installer
 ```
 
-The scripts additionally build/install an engine SDK, copy it into the editor distribution, download redistributables, and use NSIS. They may install NSIS and its plugin with an elevation prompt. Expected output is `build/win_vs2026_x64_dll/Debug/Installer.exe`. Inspect the packaging output as well as the exit status: the SDK helper currently resets one returned build status before proceeding. Use `--target NauEditor` when only developing the application.
+The scripts additionally build/install an engine SDK, copy it into the editor distribution, download redistributables, and use NSIS. They may install NSIS and its plugin with an elevation prompt. Expected output is `build/latest-release/Release/Installer.exe`. Inspect the packaging output as well as the exit status: the SDK helper currently resets one returned build status before proceeding. Use `--target NauEditor` when only developing the application.
 
 ## 5. Troubleshooting and rebuilding
 

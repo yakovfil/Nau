@@ -122,7 +122,14 @@ These are outside the Emscripten dependency installation performed here:
 
 - Editor: project Qt 6.4.1 MSVC x64 distribution, Debug libraries, Linguist and Svg;
   prepare its headers with `NauEditorPublic/scripts/prepare_qt_for_msvc.py` for MSVC 14.51.
-  OpenUSD 24.08 is fetched by the desktop DLL configuration. See [build.md](build.md).
+  The validated Release setup uses the Qt 6.4.1 `msvc2019_64` SDK at your chosen installation location and
+  locally built OpenUSD 24.08 with Adobe's `usdGltf_plugin`. Build both through
+  `NauEngineLite/cmake/build_openusd.ps1`; this also requires Python 3.10,
+  `Jinja2==3.1.6`, Git, curl and bootstrapped vcpkg selected by `VCPKG_ROOT`.
+  The plugin's image dependencies use static libraries to avoid engine DLL
+  conflicts. Select the installed SDK through `NAU_USD_SDK_DIR`; omitting it
+  retains the legacy archive download. See [build.md](build.md#4-build-the-editor)
+  and the [SDK guide](NauEngineLite/doc/openusd.md).
 - Installer packaging: NSIS and the plugins/redistributables used by the editor
   installer scripts.
 - Documentation: Sphinx and the dependencies in `NauDocsPublic/README.md`.
