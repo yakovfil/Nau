@@ -140,10 +140,11 @@ The current standard-library migration is source/ABI breaking. Rebuild the engin
 ## NauDemo web additions
 
 The demo uses the same explicitly activated **Emscripten SDK 6.0.9**, CMake
-**3.25+** (tested 4.2.1), Ninja 1.13.2, Git and Chrome as the browser runtime.
-Keep the `NauDemo` and `NauEngineLite` submodules adjacent. Its CPU asset profile
-also needs the recorded bundled `tinyimageformat` headers; no new external
-rendering SDK, Qt, USD, desktop shader tool or native DLL is required.
+**4.2+** (tested 4.2.1), Ninja 1.13.2, Git and Chrome as the browser runtime.
+Keep the engine, modules and demo checkouts adjacent. Fresh cooking for the
+editor-created demo requires the matching native shared SDK, asset/pack tools,
+OpenUSD 24.08 and Python 3.10. A prepared archive can be delivered without
+recooking; see the shared build guide for its validation and prerequisites.
 
 Chrome must support WebGL 2, transferable OffscreenCanvas, workers and
 SharedArrayBuffer on a secure cross-origin isolated page. The packaged Python
@@ -166,11 +167,11 @@ static tests with one exclusion and 406 DLL tests with four exclusions; the
 deferred async/allocator failures remain in [failed-tests.md](failed-tests.md).
 See the [validation record](openspec/changes/archive/2026-09-21-windows-msvc-2026/validation.md) for scope and evidence.
 
-See [NauDemo web](NauDemo/doc/naudemo_web.md) for build, serving, fixture,
+See [NauDemo web](NauDemo/web/README.md) for build, serving, fixture,
 relocation and recorded fresh-checkout commands.
 
 ## NauSamples dependency
 
-The root `NauSamples` submodule (`https://github.com/yakovfil/NauSamples.git`) supplies native samples and the minimal browser application. Initialize it from Nau with `git submodule update --init NauSamples`. Native NauDemo requires its shared support and sceneBase resources. The browser demo-only build uses NauDemo's own assets.
+The root `NauSamples` submodule (`https://github.com/yakovfil/NauSamples.git`) supplies native samples and the minimal browser application. Initialize it from Nau with `git submodule update --init NauSamples`. The current NauDemo project uses its own authored content and does not require NauSamples.
 
 Select another checkout through CMake's `NAU_SAMPLES_SOURCE_DIR` cache path. Configuration reports missing required sample files and never clones repositories automatically. Existing SDK/compiler prerequisites are unchanged. Keep generated caches out of source migration and reconfigure old build trees. Compatible samples, engine and demo revisions are recorded by the parent repository; publish their commits before a parent revision that references them.

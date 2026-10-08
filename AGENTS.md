@@ -7,7 +7,7 @@ This repository groups engine, editor, documentation, demo and samples submodule
 - `NauEngineLite/`: standalone C++ kernel, application framework sources and tests, bundled dependencies, and shared build infrastructure.
 - `NauEngineModules/`: feature modules, their tests, module-dependent tools and templates, and module build integration. It attaches through `cmake/attach_modules.cmake` and enables the engine's application framework and lifecycle tests.
 - `NauSamples/`: extracted examples, shared sample support and assets; integrated through engine presets and `NAU_SAMPLES_SOURCE_DIR`.
-- `NauDemo/`: native and browser rotating-cube application.
+- `NauDemo/`: editor-created scene project with shared native/browser rendering, authored content and root-level build/run helpers.
 - `NauEditorPublic/`: Qt 6/C++20 editor code in `editor/source/`, tests in `editor/tests/`, and localization in `translations/`.
 - `NauDocsPublic/`: Sphinx documentation in `source/beta/`, with build helpers in `scripts/` and root batch files.
 

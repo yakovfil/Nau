@@ -470,35 +470,32 @@ compilation, test execution, and installer generation remain
 unverified.
 
 
-## NauDemo browser build
+## NauDemo Windows and browser builds
 
-From the repository root, with SDK 6.0.9 activated:
+NauDemo is the editor-created project at the root of its submodule. From
+`NauDemo/`, use `run_windows.bat [Debug|Release]` or
+`run_web.bat [Debug|Release]` to build and launch the shared rendering scene.
+Web activates Emscripten SDK 6.0.9 through `EMSDK` or the default user installation.
+
+For build-only runs, activate Emscripten first for Web:
 
 ```powershell
-. "$HOME/emsdk/emsdk_env.ps1"
-./NauDemo/web/build.ps1 -Configuration Debug
-./NauDemo/web/build.ps1 -Configuration Release
-python NauEngineLite/build/web-demo-debug/package/serve.py --port 8000
+./NauDemo/build.ps1 -Platform Windows -Configuration Debug -Declaration ./portable_rendering_project.json
+./NauDemo/web/build.ps1 -Configuration Debug -Declaration ./portable_rendering_project.json
 ```
 
-Open the printed Chrome URL. The `scene` profile retains real Nau scene/assets
-and worker-owned WebGL 2 without desktop Graphics/UI/VFX/physics. Its browser
-material is simplified blue diffuse lighting; simulation remains nominally 100 ms
-per update. Stop is asynchronous; reload retries after Stop/failure.
-
-Both package folders contain runtime, preloaded and loose asset/configuration/
-shader inputs, a hashed manifest and a loopback server. Copy the entire folder;
-`--base-path /games/nau/` supports nested hosting. Source paths and SDK files are
-not requested at runtime. See [NauDemo browser instructions](NauDemo/doc/naudemo_web.md)
-for exact acceptance and fresh-checkout commands. Native NauDemo now also builds
-from current sources in Debug/Release using its documented CMake hook; native
-appearance and behavior have also been accepted by the user during sample extraction.
+Both use the shared packaged-project workflow and native asset preparation.
+The `NauDemoMain` deliveries are under
+`NauDemo/build/basic-rendering-scene/{windows,web}-{debug,release}/package`.
+Copy the entire package for relocation; source assets and the host SDK/USD are
+not needed at runtime. See [NauDemo build instructions](NauDemo/web/README.md)
+for overrides, serving, prerequisite discovery and visual acceptance checks.
 
 ## External samples checkout
 
 All engine samples now live in the sibling `NauSamples` submodule. From this repository root run `git submodule update --init NauSamples` before configuring native samples or the minimal browser app. Sample target names remain unchanged; Windows presets now use `win_vs2026_x64*`. The engine presets configure the engine alone. Use `NauSamples/cmake/attach_samples.cmake` through `CMAKE_PROJECT_NauEngine_INCLUDE` to add samples; `NauSamples/build_minimal.ps1` does this for the minimal profiles. Pass `"-DNAU_SAMPLES_SOURCE_DIR=<absolute path>"` for another location.
 
-Use a clean configuration after moving from engine-local samples. Native NauDemo also uses the selected sample checkout for common code, shaders and environment assets. Browser NauDemo and engine-only configurations without sample consumers do not require it. Installed SDKs continue to contain a `samples/` directory. See [external sample integration](NauSamples/doc/external_samples.md) for paths, SDK behavior and component publication order.
+Use a clean configuration after moving from engine-local samples. NauDemo uses its own project content and shared module build integration; it does not require the sample checkout. Engine-only configurations without sample consumers do not require it either. Installed SDKs continue to contain a `samples/` directory. See [external sample integration](NauSamples/doc/external_samples.md) for paths, SDK behavior and component publication order.
 
 ## VS 2026 migration
 
@@ -526,4 +523,4 @@ The exclusions record the observed `WhenAll_NoTimeout` illegal-instruction failu
 
 The Cocos2d-backed `ui` module and its widget API, UiSampleApp, GUI editor, UI synchronization, and USD UI translation have been retired. Existing UI assets are unsupported; retained tools report this without converting or deleting them. Rebuild engine, modules, editor, samples, and installed SDK consumers together in fresh output directories. Old UI DLLs, headers, and SDK exports are incompatible.
 
-Asset-backed single-line text remains available through `NauScreenText`; see `NauDemo/doc/screen_text.md`. ImGui diagnostic interfaces and the editor's Qt interface remain available.
+Asset-backed single-line text remains available through `NauScreenText`; see [the screen-text API](NauEngineModules/modules/screen_text/include/nau/text/screen_text.h). ImGui diagnostic interfaces and the editor's Qt interface remain available.
